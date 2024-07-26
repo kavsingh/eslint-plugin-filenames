@@ -1,9 +1,10 @@
 import js from "@eslint/js";
+// @ts-expect-error no-types-available
+import eslintPlugin from "eslint-plugin-eslint-plugin";
+import nodePlugin from "eslint-plugin-n";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import globals from "globals";
 import tsEslint from "typescript-eslint";
-// @ts-expect-error no-types-available
-import eslintPlugin from "eslint-plugin-eslint-plugin";
 
 import self from "./dist/index.js";
 
@@ -19,7 +20,10 @@ export default tsEslint.config(
 	js.configs.recommended,
 	...tsEslint.configs.strictTypeChecked,
 	...tsEslint.configs.stylisticTypeChecked,
+	// @ts-expect-error upstream types
+	nodePlugin.configs["flat/recommended-module"],
 	{
+		settings: { node: { version: ">=20.0.0" } },
 		plugins: { filenames: self },
 		rules: {
 			"@typescript-eslint/consistent-type-definitions": ["error", "type"],
@@ -47,6 +51,5 @@ export default tsEslint.config(
 			eslintPlugin.configs["flat/recommended"],
 		],
 	},
-	// @ts-expect-error upstream types
 	eslintPluginPrettierRecommended,
 );
