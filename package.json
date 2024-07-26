@@ -43,7 +43,7 @@
 	},
 	"scripts": {
 		"test": "glob -c 'node --import=tsx --test' './src/**/*.test.ts'",
-		"test:ci": "NODE_V8_COVERAGE=reports/coverage glob -c 'node --import=tsx --test --experimental-test-coverage' './src/**/*.test.ts'",
+		"test:cover": "NODE_V8_COVERAGE=reports/coverage glob -c 'node --import=tsx --test --experimental-test-coverage' './src/**/*.test.ts'",
 		"test:mutation": "stryker run",
 		"lint": "tsc && eslint .",
 		"build": "tsup"
