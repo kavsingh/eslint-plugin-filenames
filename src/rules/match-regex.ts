@@ -41,12 +41,16 @@ export default createRule({
 		},
 	},
 	defaultOptions: [
-		String(/^([a-z0-9]+)([A-Z][a-z0-9]+)*$/g),
-		{ ignoreExported: false },
+		undefined as string | undefined,
+		undefined as { ignoreExported?: boolean | undefined } | undefined,
 	],
 	create(context) {
-		const regexp = new RegExp(context.options[0]);
-		const ignoreExported = !!context.options[1].ignoreExported;
+		const regexp = context.options[0]
+			? new RegExp(context.options[0])
+			: /^([a-z0-9]+)([A-Z][a-z0-9]+)*$/g;
+
+		const options = context.options[1];
+		const ignoreExported = options ? !!options.ignoreExported : false;
 
 		return {
 			Program(node) {

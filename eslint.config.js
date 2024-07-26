@@ -1,7 +1,9 @@
 import js from "@eslint/js";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import globals from "globals";
 import tsEslint from "typescript-eslint";
-import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+
+import self from "./dist/index.js";
 
 export default tsEslint.config(
 	{ ignores: [".vscode/*", "dist/*", "build/*"] },
@@ -16,9 +18,19 @@ export default tsEslint.config(
 	...tsEslint.configs.strictTypeChecked,
 	...tsEslint.configs.stylisticTypeChecked,
 	{
+		plugins: { filenames: self },
 		rules: {
 			"@typescript-eslint/consistent-type-definitions": ["error", "type"],
 			"@typescript-eslint/consistent-type-imports": "error",
+			"filenames/match-regex": [
+				"error",
+				"^[a-z0-9-.]+$",
+				{ ignoreExported: true },
+			],
+			"filenames/match-exported": [
+				"error",
+				{ transforms: ["kebab"], removeRegex: "\\.test$" },
+			],
 		},
 	},
 	{

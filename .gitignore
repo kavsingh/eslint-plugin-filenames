@@ -1,5 +1,9 @@
 *.iml
 .idea/
+.stryker-tmp/
 node_modules/
-build/
-npm-debug.log
+reports/
+dist/
+*.log
+*.log.*
+

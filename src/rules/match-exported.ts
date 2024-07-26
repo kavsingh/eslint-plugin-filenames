@@ -51,7 +51,7 @@ export default createRule({
 						items: [{ type: "string" }],
 					},
 					removeRegex: { type: "string" },
-					matchFunctionCalls: { type: "boolean" },
+					matchExportedFunctionCall: { type: "boolean" },
 				},
 			},
 		],
@@ -63,20 +63,28 @@ export default createRule({
 		},
 	},
 	defaultOptions: [
-		{
-			transforms: [] as string[],
-			removeRegex: "",
-			matchFunctionCalls: false,
-		},
+		undefined as
+			| {
+					transforms?: string[] | undefined;
+					removeRegex?: string | undefined;
+					matchExportedFunctionCall?: boolean | undefined;
+			  }
+			| undefined,
 	],
 	create(context) {
-		const transforms = context.options[0].transforms;
+		const options = context.options[0];
 
-		const replacePattern = context.options[0].removeRegex
-			? new RegExp(context.options[0].removeRegex)
-			: undefined;
+		const transforms =
+			// eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+			options && options.transforms ? options.transforms : [];
 
-		const matchFunctionCalls = !!context.options[0].matchFunctionCalls;
+		const replacePattern =
+			// eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+			options && options.removeRegex
+				? new RegExp(options.removeRegex)
+				: undefined;
+
+		const matchExportedFunctionCall = !!options?.matchExportedFunctionCall;
 
 		return {
 			Program(node) {
@@ -84,15 +92,15 @@ export default createRule({
 				const absoluteFilename = path.resolve(filename);
 				const parsed = parseFilename(absoluteFilename);
 				const shouldIgnore = isIgnoredFilename(filename);
-				const exportedName = getExportedName(node, matchFunctionCalls);
+				const exportedName = getExportedName(node, matchExportedFunctionCall);
 				const isExporting = !!exportedName;
 				const expectedExport = getStringToCheckAgainstExport(
 					parsed,
 					replacePattern,
 				);
-				const transformedNames = transform(exportedName, transforms);
 				const everythingIsIndex =
 					exportedName === "index" && parsed.name === "index";
+				const transformedNames = transform(exportedName, transforms);
 				const matchesExported =
 					everythingIsIndex ||
 					transformedNames.some((name) => name === expectedExport);
@@ -101,17 +109,24 @@ export default createRule({
 
 				if (!(isExporting && !matchesExported)) return;
 
+				let whatToMatch = "the exported name";
+
+				if (transforms.length) {
+					whatToMatch =
+						transforms.length === 1
+							? "the exported and transformed name"
+							: "any of the exported and transformed names";
+				}
+
 				context.report({
 					node,
 					messageId: isIndexFile(parsed) ? "indexFile" : "normalFile",
 					data: {
+						whatToMatch,
 						name: parsed.base,
 						expectedExport: expectedExport,
 						exportName: transformedNames.join("', '"),
 						extension: parsed.ext,
-						whatToMatch: transforms.length
-							? "any of the exported and transformed names"
-							: "the exported name",
 					},
 				});
 			},
@@ -121,8 +136,9 @@ export default createRule({
 
 function transform(name: string | undefined, transformNames: string[]) {
 	if (!name) return [];
+	if (!transformNames.length) return [name];
 
-	const result = [name];
+	const result = [];
 
 	for (const transformName of transformNames) {
 		const transformer = TRANSFORMS[transformName];
