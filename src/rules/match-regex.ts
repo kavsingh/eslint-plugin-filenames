@@ -45,26 +45,23 @@ export default createRule({
 		undefined as { ignoreExported?: boolean | undefined } | undefined,
 	],
 	create(context) {
+		const filename = context.filename;
+		const shouldIgnore = isIgnoredFilename(filename);
+		const parsed = parseFilename(filename);
+
 		const regexp = context.options[0]
 			? new RegExp(context.options[0])
 			: /^([a-z0-9]+)([A-Z][a-z0-9]+)*$/g;
 
 		const options = context.options[1];
+
 		const ignoreExported = options ? !!options.ignoreExported : false;
 
 		return {
 			Program(node) {
-				const filename = context.filename;
-
-				if (isIgnoredFilename(filename)) return;
-
-				const isExporting = !!getExportedName(node);
-
-				if (ignoreExported && isExporting) return;
-
-				const parsed = parseFilename(filename);
-
+				if (shouldIgnore) return;
 				if (regexp.test(parsed.name)) return;
+				if (ignoreExported && getExportedName(node)) return;
 
 				context.report({
 					node,

@@ -73,6 +73,10 @@ export default createRule({
 	],
 	create(context) {
 		const options = context.options[0];
+		const filename = context.filename;
+		const absoluteFilename = path.resolve(filename);
+		const parsed = parseFilename(absoluteFilename);
+		const shouldIgnore = isIgnoredFilename(filename);
 
 		const transforms =
 			// eslint-disable-next-line @typescript-eslint/prefer-optional-chain
@@ -86,26 +90,24 @@ export default createRule({
 
 		const matchExportedFunctionCall = !!options?.matchExportedFunctionCall;
 
+		const expectedExport = getStringToCheckAgainstExport(
+			parsed,
+			replacePattern,
+		);
+
 		return {
 			Program(node) {
-				const filename = context.filename;
-				const absoluteFilename = path.resolve(filename);
-				const parsed = parseFilename(absoluteFilename);
-				const shouldIgnore = isIgnoredFilename(filename);
+				if (shouldIgnore) return;
+
 				const exportedName = getExportedName(node, matchExportedFunctionCall);
-				const isExporting = !!exportedName;
-				const expectedExport = getStringToCheckAgainstExport(
-					parsed,
-					replacePattern,
-				);
 				const everythingIsIndex =
 					exportedName === "index" && parsed.name === "index";
 				const transformedNames = transform(exportedName, transforms);
+
+				const isExporting = !!exportedName;
 				const matchesExported =
 					everythingIsIndex ||
 					transformedNames.some((name) => name === expectedExport);
-
-				if (shouldIgnore) return;
 
 				if (!(isExporting && !matchesExported)) return;
 

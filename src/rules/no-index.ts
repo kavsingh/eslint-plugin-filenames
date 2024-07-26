@@ -33,15 +33,13 @@ export default createRule({
 	},
 	defaultOptions: [],
 	create(context) {
+		const filename = context.filename;
+		const parsed = parseFilename(path.resolve(filename));
+		const shouldIgnore = isIgnoredFilename(filename);
+
 		return {
 			Program(node) {
-				const filename = context.filename;
-				const absoluteFilename = path.resolve(filename);
-				const parsed = parseFilename(absoluteFilename);
-				const shouldIgnore = isIgnoredFilename(filename);
-				const isIndex = isIndexFile(parsed);
-
-				if (shouldIgnore || !isIndex) return;
+				if (shouldIgnore || !isIndexFile(parsed)) return;
 
 				context.report({ node, messageId: "notAllowed" });
 			},

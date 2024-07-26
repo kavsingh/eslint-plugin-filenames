@@ -15,4 +15,4 @@ export default {
 		"match-regex": matchRegex as unknown as Rule.RuleModule,
 		"no-index": noIndex as unknown as Rule.RuleModule,
 	},
-} satisfies ESLint.Plugin;
+} as const satisfies ESLint.Plugin;
