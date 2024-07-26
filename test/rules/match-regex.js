@@ -31,12 +31,12 @@ ruleTester.run("lib/rules/match-regex", regexRule, {
         {
             code: testCode,
             filename: "foo_bar.js",
-            options: [ "^[a-z_]+$" ]
+            options: [ { conventionRegexp: "^[a-z_]+$" } ]
         },
         {
             code: testCode,
             filename: "/foo/dir/foo_bar.js",
-            options: [ "^[a-z_]+$" ]
+            options: [ { conventionRegexp: "^[a-z_]+$" } ]
         },
         {
             code: testCode,
@@ -45,17 +45,17 @@ ruleTester.run("lib/rules/match-regex", regexRule, {
         {
             code: exportingCode,
             filename: "foo_bar.js",
-            options: [ null, true ]
+            options: [ { conventionRegexp: null, ignoreExporting: true } ]
         },
         {
             code: exportingCode,
             filename: "fooBar.js",
-            options: [ "^[a-z_]$", true ]
+            options: [ { conventionRegexp: "^[a-z_]$", ignoreExporting: true } ]
         },
         {
             code: exportedFunctionCall,
             filename: "foo_bar.js",
-            options: [ "^[a-z_]+$", true ]
+            options: [ { conventionRegexp: "^[a-z_]+$", ignoreExporting: true } ]
         }
     ],
 
@@ -84,7 +84,7 @@ ruleTester.run("lib/rules/match-regex", regexRule, {
         {
             code: testCode,
             filename: "fooBar.js",
-            options: [ "^[a-z_]$" ],
+            options: [ { conventionRegexp: "^[a-z_]$" } ],
             errors: [
                 { message: "Filename 'fooBar.js' does not match the naming convention.", column: 1, line: 1 }
             ]

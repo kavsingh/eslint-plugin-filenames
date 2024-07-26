@@ -1,0 +1,28 @@
+{
+	"extends": "@tsconfig/strictest/tsconfig.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"noEmit": true,
+		"rootDir": ".",
+		"declaration": true,
+		"noEmitHelpers": true,
+		"importHelpers": true,
+		"pretty": true,
+		"sourceMap": true,
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"target": "ES2015",
+		"lib": ["ES2015"],
+		"types": ["node"]
+	},
+	"include": [
+		"./*.ts",
+		"./*.js",
+		"src/**/*.ts",
+		"src/**/*.cts",
+		"test/**/*.ts",
+		"src/lib/get-exported-name.ts",
+		"src/lib/is-ignored-filename.ts"
+	]
+}
