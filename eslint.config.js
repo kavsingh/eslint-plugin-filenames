@@ -2,6 +2,8 @@ import js from "@eslint/js";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import globals from "globals";
 import tsEslint from "typescript-eslint";
+// @ts-expect-error no-types-available
+import eslintPlugin from "eslint-plugin-eslint-plugin";
 
 import self from "./dist/index.js";
 
@@ -36,6 +38,14 @@ export default tsEslint.config(
 	{
 		files: ["*.cjs", "*.cts"],
 		languageOptions: { parserOptions: { sourceType: "script" } },
+	},
+	{
+		files: ["./src/rules"],
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		extends: [
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			eslintPlugin.configs["flat/recommended"],
+		],
 	},
 	// @ts-expect-error upstream types
 	eslintPluginPrettierRecommended,
