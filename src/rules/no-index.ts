@@ -1,6 +1,7 @@
 /**
  * @fileoverview Rule to ensure that there exist no index files
  * @author Stefan Lau
+ * @author Kav Singh
  */
 
 //------------------------------------------------------------------------------

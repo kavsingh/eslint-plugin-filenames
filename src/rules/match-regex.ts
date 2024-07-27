@@ -1,6 +1,7 @@
 /**
  * @fileoverview Rule to ensure that filenames match a convention (default: camelCase)
  * @author Stefan Lau
+ * @author Kav Singh
  */
 
 //------------------------------------------------------------------------------

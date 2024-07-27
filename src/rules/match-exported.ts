@@ -1,6 +1,7 @@
 /**
  * @fileoverview Rule to ensure that filenames match the exports of the file
  * @author Stefan Lau
+ * @author Kav Singh
  */
 
 //------------------------------------------------------------------------------
