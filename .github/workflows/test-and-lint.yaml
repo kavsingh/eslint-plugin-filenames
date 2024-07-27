@@ -25,7 +25,7 @@ jobs:
       - run: pnpm test
         if: ${{ matrix.node != 22 }}
 
-      - run: pnpm test:cover
+      - run: pnpm test:coverage
         if: ${{ matrix.node == 22 }}
 
       - run: pnpm build && pnpm lint

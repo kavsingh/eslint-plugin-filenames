@@ -9,19 +9,19 @@ importers:
   .:
     dependencies:
       '@typescript-eslint/utils':
-        specifier: 8.0.0-alpha.54
+        specifier: ^8.0.0-alpha.54
         version: 8.0.0-alpha.54(eslint@9.8.0)(typescript@5.5.4)
       lodash.camelcase:
-        specifier: 4.3.0
+        specifier: ^4.0.0
         version: 4.3.0
       lodash.kebabcase:
-        specifier: 4.1.1
+        specifier: ^4.0.0
         version: 4.1.1
       lodash.snakecase:
-        specifier: 4.1.1
+        specifier: ^4.0.0
         version: 4.1.1
       lodash.upperfirst:
-        specifier: 4.3.1
+        specifier: ^4.0.0
         version: 4.3.1
     devDependencies:
       '@eslint/js':

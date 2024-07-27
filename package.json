@@ -43,17 +43,17 @@
 	},
 	"scripts": {
 		"test": "glob -c 'node --import=tsx --test' './src/**/*.test.ts'",
-		"test:cover": "mkdir -p reports/coverage && glob -c 'node --import=tsx --test --experimental-test-coverage --test-reporter=tap --test-reporter=lcov --test-reporter-destination=stdout --test-reporter-destination=./reports/coverage/lcov.info' './src/**/*.test.ts'",
+		"test:coverage": "mkdir -p reports/coverage && glob -c 'node --import=tsx --test --experimental-test-coverage --test-reporter=tap --test-reporter=lcov --test-reporter-destination=stdout --test-reporter-destination=./reports/coverage/lcov.info' './src/**/*.test.ts'",
 		"test:mutation": "stryker run",
 		"lint": "tsc && eslint .",
 		"build": "tsup-node"
 	},
 	"dependencies": {
-		"@typescript-eslint/utils": "8.0.0-alpha.54",
-		"lodash.camelcase": "4.3.0",
-		"lodash.kebabcase": "4.1.1",
-		"lodash.snakecase": "4.1.1",
-		"lodash.upperfirst": "4.3.1"
+		"@typescript-eslint/utils": "^8.0.0-alpha.54",
+		"lodash.camelcase": "^4.0.0",
+		"lodash.kebabcase": "^4.0.0",
+		"lodash.snakecase": "^4.0.0",
+		"lodash.upperfirst": "^4.0.0"
 	},
 	"devDependencies": {
 		"@eslint/js": "9.8.0",
