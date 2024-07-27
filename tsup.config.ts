@@ -8,4 +8,5 @@ export default defineConfig({
 	shims: true,
 	dts: true,
 	clean: true,
+	sourcemap: true,
 });

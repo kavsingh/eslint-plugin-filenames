@@ -12,17 +12,8 @@
 		"sourceMap": true,
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
-		"target": "ES2015",
-		"lib": ["ES2015"],
+		"lib": ["ESNext"],
 		"types": ["node"]
 	},
-	"include": [
-		"./*.ts",
-		"./*.js",
-		"src/**/*.ts",
-		"src/**/*.cts",
-		"test/**/*.ts",
-		"src/lib/get-exported-name.ts",
-		"src/lib/is-ignored-filename.ts"
-	]
+	"include": ["./*.ts", "./*.js", "src", "test"]
 }
