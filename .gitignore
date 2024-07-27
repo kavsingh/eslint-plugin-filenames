@@ -1,9 +1,7 @@
-*.iml
-.idea/
-.stryker-tmp/
+.DS_Store
 node_modules/
+.stryker-tmp/
 reports/
 dist/
 *.log
 *.log.*
-
