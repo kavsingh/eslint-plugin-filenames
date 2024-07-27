@@ -7,7 +7,7 @@ import type { ESLint, Rule } from "eslint";
 export default {
 	meta: {
 		name: "@kavsingh/eslint-plugin-filenames",
-		version: "3.0.0-alpha.0",
+		version: "2.0.0-alpha.0",
 	},
 	// TODO: see if @typescript-eslint/utils resolves type issues
 	rules: {

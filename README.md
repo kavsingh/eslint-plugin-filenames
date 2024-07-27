@@ -1,8 +1,8 @@
-# eslint-plugin-filenames
+# @kavsingh/eslint-plugin-filenames
 
-__This project is no longer actively maintained__
+Forked from [eslint-plugin-filenames](https://github.com/selaux/eslint-plugin-filenames).
 
-[![NPM Version](https://img.shields.io/npm/v/eslint-plugin-filenames.svg?style=flat-square)](https://www.npmjs.org/package/eslint-plugin-filenames)
+[![NPM Version](https://img.shields.io/npm/v/eslint-plugin-filenames.svg?style=flat-square)](https://www.npmjs.org/package/@kavsingh/eslint-plugin-filenames)
 [![Build Status](https://img.shields.io/travis/selaux/eslint-plugin-filenames.svg?style=flat-square)](https://travis-ci.org/selaux/eslint-plugin-filenames)
 [![Coverage Status](https://img.shields.io/coveralls/selaux/eslint-plugin-filenames.svg?style=flat-square)](https://coveralls.io/r/selaux/eslint-plugin-filenames?branch=master)
 [![Dependencies](https://img.shields.io/david/selaux/eslint-plugin-filenames.svg?style=flat-square)](https://david-dm.org/selaux/eslint-plugin-filenames)
@@ -13,54 +13,57 @@ __Please note__: This plugin will only lint the filenames of the `.js`, `.jsx` f
 
 ## Enabling the plugin
 
-This plugin requires a version of `eslint>=1.0.0` to be installed as a peer dependency.
+This plugin requires a version of `eslint>=9.0.0` to be installed as a peer dependency.
 
-Modify your `.eslintrc` file to load the plugin and enable the rules you want to use.
+For `eslint<9.0.0` please use the original [eslint-plugin-filenames](https://github.com/selaux/eslint-plugin-filenames).
 
-```json
+Modify your `eslint.config.js` file to load the plugin and enable the rules you want to use.
+
+```js
+import filenamesPlugin from "@kavsingh/eslint-plugin-filenames";
+
 {
-  "plugins": [
-    "filenames"
-  ],
-  "rules": {
-    "filenames/match-regex": 2,
-    "filenames/match-exported": 2,
-    "filenames/no-index": 2
+  plugins: { filenames: filenamesPlugin },
+  rules: {
+    "filenames/match-regex": "error",
+    "filenames/match-exported": "error",
+    "filenames/no-index": "error"
   }
 }
 ```
 
 ## Rules
 
-### Consistent Filenames via regex (match-regex)
+### match-regex
 
 A rule to enforce a certain file naming convention using a regular expression.
 
-The convention can be configured using a regular expression (the default is `camelCase.js`). Additionally
-exporting files can be ignored with a second configuration parameter.
+The convention can be configured using a regular expression (the default is `camelCase`). Additionally, files with a named default export can be ignored with an options parameter.
 
-```json
-"filenames/match-regex": [2, "^[a-z_]+$", true]
+```js
+"filenames/match-regex": [
+  "error",
+  "^[a-z_]+$",
+  { ignoreDefaultExport: true }
+]
 ```
 
 With these configuration options, `camelCase.js` will be reported as an error while `snake_case.js` will pass.
-Additionally the files that have a named default export (according to the logic in the `match-exported` rule) will be
-ignored.  They could be linted with the `match-exported` rule. Please note that exported function calls are not
-respected in this case.
 
-### Matching Exported Values (match-exported)
+Additionally the files that have a named default export (according to the logic in the `match-exported` rule) will be ignored. They can be linted with the [`match-exported`](#match-exported) rule. Please note that exported function calls are not respected in this case.
 
-Match the file name against the default exported value in the module. Files that dont have a default export will
-be ignored. The exports of `index.js` are matched against their parent directory.
+### match-exported
+
+Match the file name against the default exported value in the module. Files that dont have a default export will be ignored. The exports of `index.js` are matched against their parent directory.
 
 ```js
-// Considered problem only if the file isn't named foo.js or foo/index.js
+// Considered a problem only if the file isn't named foo.js or foo/index.js
 export default function foo() {}
 
-// Considered problem only if the file isn't named Foo.js or Foo/index.js
+// Considered a problem only if the file isn't named Foo.js or Foo/index.js
 module.exports = class Foo() {}
 
-// Considered problem only if the file isn't named someVariable.js or someVariable/index.js
+// Considered a problem only if the file isn't named someVariable.js or someVariable/index.js
 module.exports = someVariable;
 
 // Never considered a problem
@@ -69,8 +72,8 @@ export default { foo: "bar" };
 
 If your filename policy doesn't quite match with your variable naming policy, you can add one or multiple transforms:
 
-```json
-"filenames/match-exported": [ 2, "kebab" ]
+```js
+"filenames/match-exported": ["error", { transforms: ["kebab"] }]
 ```
 
 Now, in your code:
@@ -86,18 +89,16 @@ Available transforms:
 '[camel](https://www.npmjs.com/package/lodash.camelcase)', and
 'pascal' (camel-cased with first letter in upper case).
 
-For multiple transforms simply specify an array like this (null in this case stands for no transform):
+For multiple transforms simply specify an array like this:
 
-```json
-"filenames/match-exported": [2, [ null, "kebab", "snake" ] ]
+```js
+"filenames/match-exported": ["error", { transforms: ["kebab", "snake"] }]
 ```
 
-If you prefer to use suffixes for your files (e.g. `Foo.react.js` for a React component file),
-you can use a second configuration parameter. It allows you to remove parts of a filename matching a regex pattern
-before transforming and matching against the export.
+If you prefer to use suffixes for your files (e.g. `Foo.react.js` for a React component file), you can use the `remove` option to remove parts of a filename matching a regex pattern before transforming and matching against the export.
 
-```json
-"filenames/match-exported": [ 2, null, "\\.react$" ]
+```js
+"filenames/match-exported": ["error", { remove: "\\.react$" }]
 ```
 
 Now, in your code:
@@ -107,10 +108,10 @@ Now, in your code:
 export default function variableName;
 ```
 
-If you also want to match exported function calls you can use the third option (a boolean flag).
+If you also want to match exported function calls you can use the `matchExportedFunctionCall` option.
 
-```json
-"filenames/match-exported": [ 2, null, null, true ]
+```js
+"filenames/match-exported": ["error", { matchExportedFunctionCall: true }]
 ```
 
 Now, in your code:
@@ -120,12 +121,15 @@ Now, in your code:
 export default functionName();
 ```
 
-### Don't allow index.js files (no-index)
+### no-index
 
-Having a bunch of `index.js` files can have negative influence on developer experience, e.g. when
-opening files by name. When enabling this rule. `index.js` files will always be considered a problem.
+Having a bunch of `index.js` files can have negative influence on developer experience, e.g. when opening files by name. When enabling this rule. `index.js` files will always be considered a problem.
 
 ## Changelog
+
+#### 2.0.0-alpha.0
+
+- Support eslint 9 FlatConfig only, drop support for node < 18
 
 #### 1.3.2
 

@@ -32,7 +32,7 @@ export default createRule({
 			{
 				type: "object",
 				properties: {
-					ignoreExported: { type: "boolean" },
+					ignoreDefaultExport: { type: "boolean" },
 				},
 			},
 		],
@@ -42,26 +42,25 @@ export default createRule({
 	},
 	defaultOptions: [
 		undefined as string | undefined,
-		undefined as { ignoreExported?: boolean | undefined } | undefined,
+		undefined as { ignoreDefaultExport?: boolean | undefined } | undefined,
 	],
 	create(context) {
 		const filename = context.filename;
 		const shouldIgnore = isIgnoredFilename(filename);
 		const parsed = parseFilename(filename);
+		const options = context.options[1];
 
 		const regexp = context.options[0]
 			? new RegExp(context.options[0])
 			: /^([a-z0-9]+)([A-Z][a-z0-9]+)*$/g;
 
-		const options = context.options[1];
-
-		const ignoreExported = options ? !!options.ignoreExported : false;
+		const ignoreDefaultExport = options ? !!options.ignoreDefaultExport : false;
 
 		return {
 			Program(node) {
 				if (shouldIgnore) return;
 				if (regexp.test(parsed.name)) return;
-				if (ignoreExported && getExportedName(node)) return;
+				if (ignoreDefaultExport && getExportedName(node)) return;
 
 				context.report({
 					node,

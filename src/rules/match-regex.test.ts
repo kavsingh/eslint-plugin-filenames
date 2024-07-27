@@ -49,17 +49,17 @@ ruleTester.run("lib/rules/match-regex", rule, {
 		{
 			code: exportingCode,
 			filename: "foo_bar.js",
-			options: ["", { ignoreExported: true }],
+			options: ["", { ignoreDefaultExport: true }],
 		},
 		{
 			code: exportingCode,
 			filename: "fooBar.js",
-			options: ["^[a-z_]$", { ignoreExported: true }],
+			options: ["^[a-z_]$", { ignoreDefaultExport: true }],
 		},
 		{
 			code: exportedFunctionCall,
 			filename: "foo_bar.js",
-			options: ["^[a-z_]+$", { ignoreExported: true }],
+			options: ["^[a-z_]+$", { ignoreDefaultExport: true }],
 		},
 	],
 

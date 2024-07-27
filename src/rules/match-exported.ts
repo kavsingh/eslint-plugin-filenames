@@ -50,7 +50,7 @@ export default createRule({
 						type: "array",
 						items: [{ type: "string" }],
 					},
-					removeRegex: { type: "string" },
+					remove: { type: "string" },
 					matchExportedFunctionCall: { type: "boolean" },
 				},
 			},
@@ -66,7 +66,7 @@ export default createRule({
 		undefined as
 			| {
 					transforms?: string[] | undefined;
-					removeRegex?: string | undefined;
+					remove?: string | undefined;
 					matchExportedFunctionCall?: boolean | undefined;
 			  }
 			| undefined,
@@ -84,9 +84,7 @@ export default createRule({
 
 		const replacePattern =
 			// eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-			options && options.removeRegex
-				? new RegExp(options.removeRegex)
-				: undefined;
+			options && options.remove ? new RegExp(options.remove) : undefined;
 
 		const matchExportedFunctionCall = !!options?.matchExportedFunctionCall;
 

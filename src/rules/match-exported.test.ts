@@ -376,7 +376,7 @@ ruleTester.run("lib/rules/match-exported with configuration", rule, {
 				ecmaVersion: 6,
 				parserOptions: { ecmaFeatures: { jsx: true } },
 			},
-			options: [{ removeRegex: "\\.react$" }],
+			options: [{ remove: "\\.react$" }],
 		},
 		{
 			code: exportedEs6JsxClassCode,
@@ -386,7 +386,7 @@ ruleTester.run("lib/rules/match-exported with configuration", rule, {
 				sourceType: "module",
 				parserOptions: { ecmaFeatures: { jsx: true } },
 			},
-			options: [{ removeRegex: "\\.react$" }],
+			options: [{ remove: "\\.react$" }],
 		},
 		{
 			code: exportedCalledFunctionCode,
@@ -473,7 +473,7 @@ ruleTester.run("lib/rules/match-exported with configuration", rule, {
 				sourceType: "module",
 				parserOptions: { ecmaFeatures: { jsx: true } },
 			},
-			options: [{ removeRegex: "\\.react$" }],
+			options: [{ remove: "\\.react$" }],
 			errors: [
 				{
 					message: "Filename 'Foo.bar' must match the exported name 'Foo'.",
@@ -490,7 +490,7 @@ ruleTester.run("lib/rules/match-exported with configuration", rule, {
 				sourceType: "module",
 				parserOptions: { ecmaFeatures: { jsx: true } },
 			},
-			options: [{ removeRegex: "\\.react$" }],
+			options: [{ remove: "\\.react$" }],
 			errors: [
 				{
 					message:
