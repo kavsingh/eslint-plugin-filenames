@@ -77,37 +77,30 @@ export default createRule({
 		const absoluteFilename = path.resolve(filename);
 		const parsed = parseFilename(absoluteFilename);
 		const shouldIgnore = isIgnoredFilename(filename);
-
-		const transforms =
-			// eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-			options && options.transforms ? options.transforms : [];
-
-		const replacePattern =
-			// eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-			options && options.remove ? new RegExp(options.remove) : undefined;
-
-		const matchExportedFunctionCall = !!options?.matchExportedFunctionCall;
-
-		const expectedExport = getStringToCheckAgainstExport(
+		const transforms = options?.transforms ?? [];
+		const matchExportedCall = !!options?.matchExportedFunctionCall;
+		const expectedName = getStringToCheckAgainstExport(
 			parsed,
-			replacePattern,
+			options?.remove ? new RegExp(options.remove) : undefined,
 		);
 
 		return {
 			Program(node) {
 				if (shouldIgnore) return;
 
-				const exportedName = getExportedName(node, matchExportedFunctionCall);
-				const everythingIsIndex =
-					exportedName === "index" && parsed.name === "index";
+				const exportedName = getExportedName(node, matchExportedCall);
+
+				if (!exportedName) return;
+
+				if (exportedName === "index" && parsed.name === "index") {
+					return;
+				}
+
 				const transformedNames = transform(exportedName, transforms);
 
-				const isExporting = !!exportedName;
-				const matchesExported =
-					everythingIsIndex ||
-					transformedNames.some((name) => name === expectedExport);
-
-				if (!(isExporting && !matchesExported)) return;
+				if (transformedNames.some((name) => name === expectedName)) {
+					return;
+				}
 
 				let whatToMatch = "the exported name";
 
@@ -124,7 +117,7 @@ export default createRule({
 					data: {
 						whatToMatch,
 						name: parsed.base,
-						expectedExport: expectedExport,
+						expectedExport: expectedName,
 						exportName: transformedNames.join("', '"),
 						extension: parsed.ext,
 					},

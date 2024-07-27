@@ -48,17 +48,18 @@ export default createRule({
 		const filename = context.filename;
 		const shouldIgnore = isIgnoredFilename(filename);
 		const parsed = parseFilename(filename);
-		const options = context.options[1];
-
+		const ignoreDefaultExport = !!context.options[1]?.ignoreDefaultExport;
 		const regexp = context.options[0]
 			? new RegExp(context.options[0])
 			: /^([a-z0-9]+)([A-Z][a-z0-9]+)*$/g;
 
-		const ignoreDefaultExport = options ? !!options.ignoreDefaultExport : false;
-
 		return {
 			Program(node) {
 				if (shouldIgnore) return;
+
+				// ensure matches against regexes with /g are reset
+				regexp.lastIndex = 0;
+
 				if (regexp.test(parsed.name)) return;
 				if (ignoreDefaultExport && getExportedName(node)) return;
 
