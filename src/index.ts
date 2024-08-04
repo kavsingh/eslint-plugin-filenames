@@ -1,18 +1,23 @@
+// eslint-disable-next-line filenames/match-exported
 import matchExported from "./rules/match-exported.js";
 import matchRegex from "./rules/match-regex.js";
 import noIndex from "./rules/no-index.js";
 
 import type { ESLint, Rule } from "eslint";
 
-export default {
+const plugin: ESLint.Plugin = {
 	meta: {
-		name: "@kavsingh/eslint-plugin-filenames",
-		version: "2.0.0-alpha.0",
+		name: PLUGIN_NAME,
+		version: PLUGIN_VERSION,
 	},
-	// TODO: see if @typescript-eslint/utils resolves type issues
 	rules: {
 		"match-exported": matchExported as unknown as Rule.RuleModule,
 		"match-regex": matchRegex as unknown as Rule.RuleModule,
 		"no-index": noIndex as unknown as Rule.RuleModule,
 	},
-} as const satisfies ESLint.Plugin;
+};
+
+export default plugin;
+
+declare const PLUGIN_NAME: string;
+declare const PLUGIN_VERSION: string;

@@ -14,7 +14,7 @@ export default tsEslint.config(
 		linterOptions: { reportUnusedDisableDirectives: true },
 		languageOptions: {
 			globals: { ...globals.node },
-			parserOptions: { project: true },
+			parserOptions: { projectService: true },
 		},
 	},
 	js.configs.recommended,
