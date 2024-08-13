@@ -20,7 +20,6 @@ export default tsEslint.config(
 	js.configs.recommended,
 	...tsEslint.configs.strictTypeChecked,
 	...tsEslint.configs.stylisticTypeChecked,
-	// @ts-expect-error upstream types
 	nodePlugin.configs["flat/recommended-module"],
 	{
 		settings: { node: { version: ">=20.0.0" } },

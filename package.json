@@ -24,7 +24,7 @@
 		"path"
 	],
 	"type": "module",
-	"packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e",
+	"packageManager": "pnpm@9.7.0+sha512.dc09430156b427f5ecfc79888899e1c39d2d690f004be70e05230b72cb173d96839587545d09429b55ac3c429c801b4dc3c0e002f653830a420fa2dd4e3cf9cf",
 	"main": "dist/index.js",
 	"files": [
 		"dist/**/*"
@@ -56,8 +56,8 @@
 		"lodash.upperfirst": "^4.0.0"
 	},
 	"devDependencies": {
-		"@eslint/js": "9.8.0",
-		"@stryker-mutator/core": "8.3.0",
+		"@eslint/js": "9.9.0",
+		"@stryker-mutator/core": "8.5.0",
 		"@tsconfig/strictest": "2.0.5",
 		"@types/eslint": "9.6.0",
 		"@types/eslint__js": "8.42.3",
@@ -65,19 +65,19 @@
 		"@types/lodash.kebabcase": "4.1.9",
 		"@types/lodash.snakecase": "4.1.9",
 		"@types/lodash.upperfirst": "4.3.9",
-		"@types/node": "20.14.12",
-		"eslint": "9.8.0",
+		"@types/node": "22.2.0",
+		"eslint": "9.9.0",
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-eslint-plugin": "6.2.0",
-		"eslint-plugin-n": "17.10.1",
+		"eslint-plugin-n": "17.10.2",
 		"eslint-plugin-prettier": "5.2.1",
 		"glob": "11.0.0",
 		"globals": "15.9.0",
 		"prettier": "3.3.3",
 		"tsup": "8.2.4",
-		"tsx": "4.16.5",
+		"tsx": "4.17.0",
 		"typescript": "5.5.4",
-		"typescript-eslint": "8.0.0"
+		"typescript-eslint": "8.1.0"
 	},
 	"peerDependencies": {
 		"eslint": "^9.0.0"
