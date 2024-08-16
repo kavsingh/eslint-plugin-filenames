@@ -52,10 +52,14 @@ const matchExported: Rule.RuleModule = {
 			},
 		],
 		messages: {
-			normalFile:
-				"Filename '{{expectedExport}}' must match {{whatToMatch}} '{{exportName}}'.",
 			indexFile:
-				"The directory '{{expectedExport}}' must be named '{{exportName}}', after the exported value of its index file.",
+				"The directory '{{expectedName}}' must be named '{{candidateNames}}', after the exported value of its index file.",
+			noTransform:
+				"Filename '{{expectedName}}' must match the exported name '{{candidateNames}}'.",
+			singleTransform:
+				"Filename '{{expectedName}}' must match the exported and transformed name '{{candidateNames}}'.",
+			multipleTransforms:
+				"Filename '{{expectedName}}' must match any of the exported and transformed names '{{candidateNames}}'.",
 		},
 	},
 	create(context) {
@@ -106,24 +110,21 @@ const matchExported: Rule.RuleModule = {
 					return;
 				}
 
-				let whatToMatch = "the exported name";
-
-				if (transformerNames.length) {
-					whatToMatch =
-						transformerNames.length === 1
-							? "the exported and transformed name"
-							: "any of the exported and transformed names";
+				let messageId = "multipleTransforms";
+				if (parsed.isIndex) {
+					messageId = "indexFile";
+				} else if (!transformerNames.length) {
+					messageId = "noTransform";
+				} else if (transformerNames.length === 1) {
+					messageId = "singleTransform";
 				}
 
 				context.report({
 					node,
-					messageId: parsed.isIndex ? "indexFile" : "normalFile",
+					messageId,
 					data: {
-						whatToMatch,
-						name: parsed.base,
-						expectedExport: expectedName,
-						exportName: candidateNames.join("', '"),
-						extension: parsed.ext,
+						expectedName,
+						candidateNames: candidateNames.join("', '"),
 					},
 				});
 			},
