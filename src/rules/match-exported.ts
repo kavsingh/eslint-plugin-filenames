@@ -24,14 +24,14 @@ import readProp from "../lib/read-prop.js";
 import type { Rule } from "eslint";
 import type { ParsedFilename } from "../lib/parse-filename.js";
 
-const TRANSFORMS: Record<string, Transform> = {
+const TRANSFORMERS: Record<string, Transformer> = {
 	kebab: kebabCase,
 	snake: snakeCase,
 	camel: camelCase,
 	pascal: (value: string) => upperFirst(camelCase(value)),
 };
 
-type Transform = (value: string) => string;
+type Transformer = (value: string) => string;
 
 const matchExported: Rule.RuleModule = {
 	meta: {
@@ -65,19 +65,21 @@ const matchExported: Rule.RuleModule = {
 		const absoluteFilename = path.resolve(filename);
 		const parsed = parseFilename(absoluteFilename);
 		const shouldIgnore = isIgnoredFilename(filename);
+		const isIndex = isIndexFile(parsed);
 
-		const options: unknown = context.options[0] ?? {};
+		const options: unknown = context.options[0];
 		const remove = readProp(options, "remove");
-		const transformsOption = readProp(options, "transforms");
+		const transforms = readProp(options, "transforms");
 		const matchExportedCall = !!readProp(options, "matchExportedFunctionCall");
 
 		const expectedName = getStringToCheckAgainstExport(
 			parsed,
+			isIndex,
 			remove && typeof remove === "string" ? new RegExp(remove) : undefined,
 		);
 
-		const transforms: unknown[] = Array.isArray(transformsOption)
-			? transformsOption
+		const transformerNames = Array.isArray(transforms)
+			? transforms.filter((item) => typeof item === "string")
 			: [];
 
 		return {
@@ -96,29 +98,32 @@ const matchExported: Rule.RuleModule = {
 					return;
 				}
 
-				const transformedNames = transform(exportedName, transforms);
+				const candidateNames = getCanditateNames(
+					exportedName,
+					transformerNames,
+				);
 
-				if (transformedNames.some((name) => name === expectedName)) {
+				if (candidateNames.some((name) => name === expectedName)) {
 					return;
 				}
 
 				let whatToMatch = "the exported name";
 
-				if (transforms.length) {
+				if (transformerNames.length) {
 					whatToMatch =
-						transforms.length === 1
+						transformerNames.length === 1
 							? "the exported and transformed name"
 							: "any of the exported and transformed names";
 				}
 
 				context.report({
 					node,
-					messageId: isIndexFile(parsed) ? "indexFile" : "normalFile",
+					messageId: isIndex ? "indexFile" : "normalFile",
 					data: {
 						whatToMatch,
 						name: parsed.base,
 						expectedExport: expectedName,
-						exportName: transformedNames.join("', '"),
+						exportName: candidateNames.join("', '"),
 						extension: parsed.ext,
 					},
 				});
@@ -129,15 +134,17 @@ const matchExported: Rule.RuleModule = {
 
 export default matchExported;
 
-function transform(name: string | undefined, transformNames: unknown[]) {
+function getCanditateNames(
+	name: string | undefined,
+	transformerNames: string[],
+) {
 	if (!name) return [];
-	if (!transformNames.length) return [name];
+	if (!transformerNames.length) return [name];
 
 	const result = [];
 
-	for (const transformName of transformNames) {
-		const transformer =
-			typeof transformName === "string" ? TRANSFORMS[transformName] : undefined;
+	for (const transformerName of transformerNames) {
+		const transformer = TRANSFORMERS[transformerName];
 
 		if (transformer) result.push(transformer(name));
 	}
@@ -147,12 +154,13 @@ function transform(name: string | undefined, transformNames: unknown[]) {
 
 function getStringToCheckAgainstExport(
 	parsed: ParsedFilename,
+	isIndex: boolean,
 	replacePattern?: RegExp | undefined,
 ): string {
 	const dirArray = parsed.dir.split(path.sep);
 	const lastDirectory = dirArray[dirArray.length - 1];
 
-	if (isIndexFile(parsed) && lastDirectory) {
+	if (isIndex && lastDirectory) {
 		return lastDirectory;
 	}
 
