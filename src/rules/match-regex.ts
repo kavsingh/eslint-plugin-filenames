@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 import parseFilename from "../lib/parse-filename.js";
-import getExportedName from "../lib/get-exported-name.js";
+import getDefaultExportName from "../lib/get-default-export-name.js";
 import readProp from "../lib/read-prop.js";
 
 import type { Rule } from "eslint";
@@ -53,7 +53,7 @@ const matchRegex: Rule.RuleModule = {
 
 		return {
 			Program(node) {
-				if (ignoreDefaultExport && getExportedName(node)) {
+				if (ignoreDefaultExport && getDefaultExportName(node)) {
 					return;
 				}
 

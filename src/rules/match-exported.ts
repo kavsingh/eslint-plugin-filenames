@@ -15,7 +15,7 @@ import kebabCase from "lodash.kebabcase";
 import snakeCase from "lodash.snakecase";
 import upperFirst from "lodash.upperfirst";
 
-import getExportedName from "../lib/get-exported-name.js";
+import getDefaultExportName from "../lib/get-default-export-name.js";
 import parseFilename from "../lib/parse-filename.js";
 import readProp from "../lib/read-prop.js";
 
@@ -77,7 +77,7 @@ const matchExported: Rule.RuleModule = {
 
 		return {
 			Program(node) {
-				const exportedName = getExportedName(node, matchExportedCall);
+				const exportedName = getDefaultExportName(node, matchExportedCall);
 
 				if (!exportedName) {
 					return;

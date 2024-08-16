@@ -6,7 +6,7 @@ import type {
 	// eslint-disable-next-line n/no-missing-import
 } from "estree";
 
-export default function getExportedName(
+export default function getDefaultExportName(
 	programNode: Program,
 	useCallExpression?: boolean | undefined,
 ) {
