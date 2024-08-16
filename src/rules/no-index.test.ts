@@ -26,22 +26,72 @@ ruleTester.run("lib/rules/no-index", rule, {
 			code: testCode,
 			filename: "/some/dir/foo.js",
 		},
+		{
+			code: testCode,
+			filename: "foo.ts",
+		},
+		{
+			code: testCode,
+			filename: "/some/dir/foo.ts",
+		},
+		{
+			code: testCode,
+			filename: "foo.jsx",
+		},
+		{
+			code: testCode,
+			filename: "/some/dir/foo.jsx",
+		},
+		{
+			code: testCode,
+			filename: "foo.tsx",
+		},
+		{
+			code: testCode,
+			filename: "/some/dir/foo.tsx",
+		},
 	],
 
 	invalid: [
 		{
 			code: testCode,
 			filename: "index.js",
-			errors: [
-				{ message: "'index.js' files are not allowed.", column: 1, line: 1 },
-			],
+			errors: [{ message: "index files are not allowed.", column: 1, line: 1 }],
+		},
+		{
+			code: testCode,
+			filename: "index.ts",
+			errors: [{ message: "index files are not allowed.", column: 1, line: 1 }],
+		},
+		{
+			code: testCode,
+			filename: "index.jsx",
+			errors: [{ message: "index files are not allowed.", column: 1, line: 1 }],
+		},
+		{
+			code: testCode,
+			filename: "index.tsx",
+			errors: [{ message: "index files are not allowed.", column: 1, line: 1 }],
 		},
 		{
 			code: testCode,
 			filename: "/some/dir/index.js",
-			errors: [
-				{ message: "'index.js' files are not allowed.", column: 1, line: 1 },
-			],
+			errors: [{ message: "index files are not allowed.", column: 1, line: 1 }],
+		},
+		{
+			code: testCode,
+			filename: "/some/dir/index.ts",
+			errors: [{ message: "index files are not allowed.", column: 1, line: 1 }],
+		},
+		{
+			code: testCode,
+			filename: "/some/dir/index.jsx",
+			errors: [{ message: "index files are not allowed.", column: 1, line: 1 }],
+		},
+		{
+			code: testCode,
+			filename: "/some/dir/index.tsx",
+			errors: [{ message: "index files are not allowed.", column: 1, line: 1 }],
 		},
 	],
 });

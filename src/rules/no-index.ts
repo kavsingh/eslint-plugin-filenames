@@ -12,7 +12,6 @@ import path from "node:path";
 
 import parseFilename from "../lib/parse-filename.js";
 import isIgnoredFilename from "../lib/is-ignored-filename.js";
-import isIndexFile from "../lib/is-index-file.js";
 
 import type { Rule } from "eslint";
 
@@ -25,13 +24,13 @@ const noIndex: Rule.RuleModule = {
 		},
 		schema: [],
 		messages: {
-			notAllowed: "'index.js' files are not allowed.",
+			notAllowed: "index files are not allowed.",
 		},
 	},
 	create(context) {
 		const filename = context.filename;
 		const parsed = parseFilename(path.resolve(filename));
-		const isIndex = isIndexFile(parsed) && !isIgnoredFilename(filename);
+		const isIndex = parsed.isIndex && !isIgnoredFilename(filename);
 
 		return {
 			Program(node) {

@@ -17,7 +17,6 @@ import upperFirst from "lodash.upperfirst";
 
 import getExportedName from "../lib/get-exported-name.js";
 import isIgnoredFilename from "../lib/is-ignored-filename.js";
-import isIndexFile from "../lib/is-index-file.js";
 import parseFilename from "../lib/parse-filename.js";
 import readProp from "../lib/read-prop.js";
 
@@ -65,7 +64,6 @@ const matchExported: Rule.RuleModule = {
 		const absoluteFilename = path.resolve(filename);
 		const parsed = parseFilename(absoluteFilename);
 		const shouldIgnore = isIgnoredFilename(filename);
-		const isIndex = isIndexFile(parsed);
 
 		const options: unknown = context.options[0];
 		const remove = readProp(options, "remove");
@@ -74,7 +72,6 @@ const matchExported: Rule.RuleModule = {
 
 		const expectedName = getStringToCheckAgainstExport(
 			parsed,
-			isIndex,
 			remove && typeof remove === "string" ? new RegExp(remove) : undefined,
 		);
 
@@ -94,7 +91,7 @@ const matchExported: Rule.RuleModule = {
 					return;
 				}
 
-				if (exportedName === "index" && parsed.name === "index") {
+				if (parsed.isIndex && exportedName === "index") {
 					return;
 				}
 
@@ -118,7 +115,7 @@ const matchExported: Rule.RuleModule = {
 
 				context.report({
 					node,
-					messageId: isIndex ? "indexFile" : "normalFile",
+					messageId: parsed.isIndex ? "indexFile" : "normalFile",
 					data: {
 						whatToMatch,
 						name: parsed.base,
@@ -154,13 +151,12 @@ function getCanditateNames(
 
 function getStringToCheckAgainstExport(
 	parsed: ParsedFilename,
-	isIndex: boolean,
 	replacePattern?: RegExp | undefined,
 ): string {
 	const dirArray = parsed.dir.split(path.sep);
 	const lastDirectory = dirArray[dirArray.length - 1];
 
-	if (isIndex && lastDirectory) {
+	if (parsed.isIndex && lastDirectory) {
 		return lastDirectory;
 	}
 
