@@ -1,3 +1,5 @@
+/* node:coverage disable */
+
 import { RuleTester } from "eslint";
 
 import matchRegex from "./match-regex.js";

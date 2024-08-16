@@ -1,3 +1,5 @@
+/* node:coverage disable */
+
 // eslint-disable-next-line filenames/match-exported
 import matchExported from "./rules/match-exported.js";
 import matchRegex from "./rules/match-regex.js";

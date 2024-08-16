@@ -1,3 +1,5 @@
+/* node:coverage disable */
+
 import { mock } from "node:test";
 
 import { RuleTester } from "eslint";

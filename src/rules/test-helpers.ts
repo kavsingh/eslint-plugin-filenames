@@ -1,3 +1,5 @@
+/* node:coverage disable */
+
 import type { RuleTester } from "eslint";
 
 const defaultExtensions = [
