@@ -10,40 +10,37 @@
 
 import path from "node:path";
 
-import { ESLintUtils } from "@typescript-eslint/utils";
-
 import parseFilename from "../lib/parse-filename.js";
 import isIgnoredFilename from "../lib/is-ignored-filename.js";
 import isIndexFile from "../lib/is-index-file.js";
 
-const createRule = ESLintUtils.RuleCreator((name) => {
-	return `https://github.com/kavsingh/eslint-plugin-filenames?tab=readme-ov-file#${name}`;
-});
+import type { Rule } from "eslint";
 
-export default createRule({
-	name: "no-index",
+const noIndex: Rule.RuleModule = {
 	meta: {
 		type: "problem",
 		docs: {
 			description: "Ensure no index files are used",
+			url: "https://github.com/kavsingh/eslint-plugin-filenames?tab=readme-ov-file#no-index",
 		},
 		schema: [],
 		messages: {
 			notAllowed: "'index.js' files are not allowed.",
 		},
 	},
-	defaultOptions: [],
 	create(context) {
 		const filename = context.filename;
 		const parsed = parseFilename(path.resolve(filename));
-		const shouldIgnore = isIgnoredFilename(filename);
+		const isIndex = isIndexFile(parsed) && !isIgnoredFilename(filename);
 
 		return {
 			Program(node) {
-				if (shouldIgnore || !isIndexFile(parsed)) return;
-
-				context.report({ node, messageId: "notAllowed" });
+				if (isIndex) {
+					context.report({ node, messageId: "notAllowed" });
+				}
 			},
 		};
 	},
-});
+};
+
+export default noIndex;

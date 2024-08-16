@@ -8,23 +8,20 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 
-import { ESLintUtils } from "@typescript-eslint/utils";
-
 import parseFilename from "../lib/parse-filename.js";
 import getExportedName from "../lib/get-exported-name.js";
 import isIgnoredFilename from "../lib/is-ignored-filename.js";
+import readProp from "../lib/read-prop.js";
 
-const createRule = ESLintUtils.RuleCreator((name) => {
-	return `https://github.com/kavsingh/eslint-plugin-filenames?tab=readme-ov-file#${name}`;
-});
+import type { Rule } from "eslint";
 
-export default createRule({
-	name: "match-regex",
+const matchRegex: Rule.RuleModule = {
 	meta: {
 		type: "problem",
 		docs: {
 			description:
 				"Enforce a file naming convention via regex (default: camelCase)",
+			url: `https://github.com/kavsingh/eslint-plugin-filenames?tab=readme-ov-file#match-regex`,
 		},
 		schema: [
 			{
@@ -41,28 +38,35 @@ export default createRule({
 			doesNotMatch: "Filename '{{name}}' does not match the naming convention.",
 		},
 	},
-	defaultOptions: [
-		undefined as string | undefined,
-		undefined as { ignoreDefaultExport?: boolean | undefined } | undefined,
-	],
 	create(context) {
 		const filename = context.filename;
 		const shouldIgnore = isIgnoredFilename(filename);
 		const parsed = parseFilename(filename);
-		const ignoreDefaultExport = !!context.options[1]?.ignoreDefaultExport;
-		const regexp = context.options[0]
-			? new RegExp(context.options[0])
-			: /^([a-z0-9]+)([A-Z][a-z0-9]+)*$/g;
+
+		const regexp =
+			typeof context.options[0] === "string"
+				? new RegExp(context.options[0])
+				: /^([a-z0-9]+)([A-Z][a-z0-9]+)*$/g;
+		const nameMatchesRegex = regexp.test(parsed.name);
+
+		const ignoreDefaultExport = !!readProp(
+			context.options[1],
+			"ignoreDefaultExport",
+		);
 
 		return {
 			Program(node) {
-				if (shouldIgnore) return;
+				if (shouldIgnore) {
+					return;
+				}
 
-				// ensure matches against regexes with /g are reset
-				regexp.lastIndex = 0;
+				if (ignoreDefaultExport && getExportedName(node)) {
+					return;
+				}
 
-				if (regexp.test(parsed.name)) return;
-				if (ignoreDefaultExport && getExportedName(node)) return;
+				if (nameMatchesRegex) {
+					return;
+				}
 
 				context.report({
 					node,
@@ -72,4 +76,6 @@ export default createRule({
 			},
 		};
 	},
-});
+};
+
+export default matchRegex;

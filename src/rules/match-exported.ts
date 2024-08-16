@@ -10,7 +10,6 @@
 
 import path from "node:path";
 
-import { ESLintUtils } from "@typescript-eslint/utils";
 import camelCase from "lodash.camelcase";
 import kebabCase from "lodash.kebabcase";
 import snakeCase from "lodash.snakecase";
@@ -20,12 +19,10 @@ import getExportedName from "../lib/get-exported-name.js";
 import isIgnoredFilename from "../lib/is-ignored-filename.js";
 import isIndexFile from "../lib/is-index-file.js";
 import parseFilename from "../lib/parse-filename.js";
+import readProp from "../lib/read-prop.js";
 
+import type { Rule } from "eslint";
 import type { ParsedFilename } from "../lib/parse-filename.js";
-
-const createRule = ESLintUtils.RuleCreator((name) => {
-	return `https://github.com/kavsingh/eslint-plugin-filenames?tab=readme-ov-file#${name}`;
-});
 
 const TRANSFORMS: Record<string, Transform> = {
 	kebab: kebabCase,
@@ -36,12 +33,12 @@ const TRANSFORMS: Record<string, Transform> = {
 
 type Transform = (value: string) => string;
 
-export default createRule({
-	name: "match-exported",
+const matchExported: Rule.RuleModule = {
 	meta: {
 		type: "problem",
 		docs: {
 			description: "Ensure that filenames match the exports of the file",
+			url: "https://github.com/kavsingh/eslint-plugin-filenames?tab=readme-ov-file#match-exported",
 		},
 		schema: [
 			{
@@ -63,35 +60,37 @@ export default createRule({
 				"The directory '{{expectedExport}}' must be named '{{exportName}}', after the exported value of its index file.",
 		},
 	},
-	defaultOptions: [
-		undefined as
-			| {
-					transforms?: string[] | undefined;
-					remove?: string | undefined;
-					matchExportedFunctionCall?: boolean | undefined;
-			  }
-			| undefined,
-	],
 	create(context) {
-		const options = context.options[0];
 		const filename = context.filename;
 		const absoluteFilename = path.resolve(filename);
 		const parsed = parseFilename(absoluteFilename);
 		const shouldIgnore = isIgnoredFilename(filename);
-		const transforms = options?.transforms ?? [];
-		const matchExportedCall = !!options?.matchExportedFunctionCall;
+
+		const options: unknown = context.options[0] ?? {};
+		const remove = readProp(options, "remove");
+		const transformsOption = readProp(options, "transforms");
+		const matchExportedCall = !!readProp(options, "matchExportedFunctionCall");
+
 		const expectedName = getStringToCheckAgainstExport(
 			parsed,
-			options?.remove ? new RegExp(options.remove) : undefined,
+			remove && typeof remove === "string" ? new RegExp(remove) : undefined,
 		);
+
+		const transforms: unknown[] = Array.isArray(transformsOption)
+			? transformsOption
+			: [];
 
 		return {
 			Program(node) {
-				if (shouldIgnore) return;
+				if (shouldIgnore) {
+					return;
+				}
 
 				const exportedName = getExportedName(node, matchExportedCall);
 
-				if (!exportedName) return;
+				if (!exportedName) {
+					return;
+				}
 
 				if (exportedName === "index" && parsed.name === "index") {
 					return;
@@ -126,16 +125,19 @@ export default createRule({
 			},
 		};
 	},
-});
+};
 
-function transform(name: string | undefined, transformNames: string[]) {
+export default matchExported;
+
+function transform(name: string | undefined, transformNames: unknown[]) {
 	if (!name) return [];
 	if (!transformNames.length) return [name];
 
 	const result = [];
 
 	for (const transformName of transformNames) {
-		const transformer = TRANSFORMS[transformName];
+		const transformer =
+			typeof transformName === "string" ? TRANSFORMS[transformName] : undefined;
 
 		if (transformer) result.push(transformer(name));
 	}
@@ -146,11 +148,19 @@ function transform(name: string | undefined, transformNames: string[]) {
 function getStringToCheckAgainstExport(
 	parsed: ParsedFilename,
 	replacePattern?: RegExp | undefined,
-) {
+): string {
 	const dirArray = parsed.dir.split(path.sep);
 	const lastDirectory = dirArray[dirArray.length - 1];
 
-	if (isIndexFile(parsed)) return lastDirectory;
+	if (isIndexFile(parsed) && lastDirectory) {
+		return lastDirectory;
+	}
 
-	return replacePattern ? parsed.name.replace(replacePattern, "") : parsed.name;
+	if (!replacePattern) {
+		return parsed.name;
+	}
+
+	replacePattern.lastIndex = 0;
+
+	return parsed.name.replace(replacePattern, "");
 }
