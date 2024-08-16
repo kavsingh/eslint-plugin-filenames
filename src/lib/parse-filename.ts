@@ -1,17 +1,9 @@
 import path from "node:path";
 
-export default function parseFilename(filename: string) {
-	const absolutePath = path.resolve(filename);
-	const ext = path.extname(absolutePath);
-	const name = path.basename(absolutePath, ext);
+export default function parseFilename(filename: string): ParsedFilename {
+	const parsed = path.parse(path.resolve(filename));
 
-	return {
-		ext,
-		name,
-		dir: path.dirname(absolutePath),
-		base: path.basename(absolutePath),
-		isIndex: name === "index",
-	} as const;
+	return { ...parsed, isIndex: parsed.name === "index" };
 }
 
-export type ParsedFilename = ReturnType<typeof parseFilename>;
+export type ParsedFilename = Readonly<path.ParsedPath & { isIndex: boolean }>;
