@@ -5,6 +5,7 @@ import { RuleTester } from "eslint";
 import matchExported from "./match-exported.js";
 
 import type { Rule } from "eslint";
+import { withExtensions } from "./test-helpers.js";
 
 const testCode = "var foo = 'bar';";
 const testCallCode = "export default foo();";
@@ -35,7 +36,7 @@ const rule = matchExported as unknown as Rule.RuleModule;
 mock.method(process, "cwd", () => "/foo");
 
 ruleTester.run("match-exported", rule, {
-	valid: [
+	valid: withExtensions([
 		{
 			code: testCode,
 			filename: "<text>",
@@ -146,15 +147,16 @@ ruleTester.run("match-exported", rule, {
 			filename: "index.js",
 			languageOptions: { ecmaVersion: 6, sourceType: "module" },
 		},
-	],
+	]),
 
-	invalid: [
+	invalid: withExtensions([
 		{
 			code: exportedVariableCode,
 			filename: "/some/dir/fooBar.js",
 			errors: [
 				{
-					message: "Filename 'fooBar' must match the exported name 'exported'.",
+					messageId: "noTransform",
+					data: { exportingFileName: "fooBar", candidateFileNames: "exported" },
 					column: 1,
 					line: 1,
 				},
@@ -166,7 +168,8 @@ ruleTester.run("match-exported", rule, {
 			languageOptions: { ecmaVersion: 6 },
 			errors: [
 				{
-					message: "Filename 'foo' must match the exported name 'Foo'.",
+					messageId: "noTransform",
+					data: { exportingFileName: "foo", candidateFileNames: "Foo" },
 					column: 1,
 					line: 1,
 				},
@@ -181,7 +184,8 @@ ruleTester.run("match-exported", rule, {
 			},
 			errors: [
 				{
-					message: "Filename 'foo' must match the exported name 'Foo'.",
+					messageId: "noTransform",
+					data: { exportingFileName: "foo", candidateFileNames: "Foo" },
 					column: 1,
 					line: 1,
 				},
@@ -192,7 +196,8 @@ ruleTester.run("match-exported", rule, {
 			filename: "/some/dir/bar.js",
 			errors: [
 				{
-					message: "Filename 'bar' must match the exported name 'foo'.",
+					messageId: "noTransform",
+					data: { exportingFileName: "bar", candidateFileNames: "foo" },
 					column: 1,
 					line: 1,
 				},
@@ -204,7 +209,8 @@ ruleTester.run("match-exported", rule, {
 			languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } },
 			errors: [
 				{
-					message: "Filename 'bar' must match the exported name 'foo'.",
+					messageId: "noTransform",
+					data: { exportingFileName: "bar", candidateFileNames: "foo" },
 					column: 1,
 					line: 1,
 				},
@@ -216,7 +222,8 @@ ruleTester.run("match-exported", rule, {
 			languageOptions: { ecmaVersion: 6, sourceType: "module" },
 			errors: [
 				{
-					message: "Filename 'fooBar' must match the exported name 'exported'.",
+					messageId: "noTransform",
+					data: { exportingFileName: "fooBar", candidateFileNames: "exported" },
 					column: 1,
 					line: 1,
 				},
@@ -228,7 +235,8 @@ ruleTester.run("match-exported", rule, {
 			languageOptions: { ecmaVersion: 6, sourceType: "module" },
 			errors: [
 				{
-					message: "Filename 'bar' must match the exported name 'Foo'.",
+					messageId: "noTransform",
+					data: { exportingFileName: "bar", candidateFileNames: "Foo" },
 					column: 1,
 					line: 1,
 				},
@@ -244,7 +252,8 @@ ruleTester.run("match-exported", rule, {
 			},
 			errors: [
 				{
-					message: "Filename 'bar' must match the exported name 'Foo'.",
+					messageId: "noTransform",
+					data: { exportingFileName: "bar", candidateFileNames: "Foo" },
 					column: 1,
 					line: 1,
 				},
@@ -256,8 +265,8 @@ ruleTester.run("match-exported", rule, {
 			languageOptions: { ecmaVersion: 6, sourceType: "module" },
 			errors: [
 				{
-					message:
-						"The directory 'fooBar' must be named 'foo', after the exported value of its index file.",
+					messageId: "indexFile",
+					data: { exportingFileName: "fooBar", candidateFileNames: "foo" },
 					column: 1,
 					line: 1,
 				},
@@ -273,8 +282,8 @@ ruleTester.run("match-exported", rule, {
 			},
 			errors: [
 				{
-					message:
-						"The directory 'fooBar' must be named 'foo', after the exported value of its index file.",
+					messageId: "indexFile",
+					data: { exportingFileName: "fooBar", candidateFileNames: "foo" },
 					column: 1,
 					line: 1,
 				},
@@ -286,8 +295,8 @@ ruleTester.run("match-exported", rule, {
 			languageOptions: { ecmaVersion: 6, sourceType: "module" },
 			errors: [
 				{
-					message:
-						"The directory 'foo' must be named 'exported', after the exported value of its index file.",
+					messageId: "indexFile",
+					data: { exportingFileName: "foo", candidateFileNames: "exported" },
 					column: 1,
 					line: 1,
 				},
@@ -302,17 +311,18 @@ ruleTester.run("match-exported", rule, {
 			},
 			errors: [
 				{
-					message: "Filename 'Foo.react' must match the exported name 'Foo'.",
+					messageId: "noTransform",
+					data: { exportingFileName: "Foo.react", candidateFileNames: "Foo" },
 					column: 1,
 					line: 1,
 				},
 			],
 		},
-	],
+	]),
 });
 
 ruleTester.run("lib/rules/match-exported with configuration", rule, {
-	valid: [
+	valid: withExtensions([
 		{
 			code: testCode,
 			filename: "<text>",
@@ -401,17 +411,20 @@ ruleTester.run("lib/rules/match-exported with configuration", rule, {
 			filename: "/some/dir/foo.js",
 			options: [{ matchExportedFunctionCalls: true }],
 		},
-	],
+	]),
 
-	invalid: [
+	invalid: withExtensions([
 		{
 			code: camelCaseCommonJS,
 			filename: "variableName.js",
 			options: [{ transforms: ["snake"] }],
 			errors: [
 				{
-					message:
-						"Filename 'variableName' must match the exported and transformed name 'variable_name'.",
+					messageId: "singleTransform",
+					data: {
+						exportingFileName: "variableName",
+						candidateFileNames: "variable_name",
+					},
 					column: 1,
 					line: 1,
 				},
@@ -424,8 +437,11 @@ ruleTester.run("lib/rules/match-exported with configuration", rule, {
 			options: [{ transforms: ["kebab"] }],
 			errors: [
 				{
-					message:
-						"Filename 'variableName' must match the exported and transformed name 'variable-name'.",
+					messageId: "singleTransform",
+					data: {
+						exportingFileName: "variableName",
+						candidateFileNames: "variable-name",
+					},
 					column: 1,
 					line: 1,
 				},
@@ -438,8 +454,11 @@ ruleTester.run("lib/rules/match-exported with configuration", rule, {
 			options: [{ transforms: ["pascal"] }],
 			errors: [
 				{
-					message:
-						"Filename 'variableName' must match the exported and transformed name 'VariableName'.",
+					messageId: "singleTransform",
+					data: {
+						exportingFileName: "variableName",
+						candidateFileNames: "VariableName",
+					},
 					column: 1,
 					line: 1,
 				},
@@ -452,8 +471,11 @@ ruleTester.run("lib/rules/match-exported with configuration", rule, {
 			options: [{ transforms: [] }],
 			errors: [
 				{
-					message:
-						"Filename 'VariableName' must match the exported name 'variableName'.",
+					messageId: "noTransform",
+					data: {
+						exportingFileName: "VariableName",
+						candidateFileNames: "variableName",
+					},
 					column: 1,
 					line: 1,
 				},
@@ -466,8 +488,11 @@ ruleTester.run("lib/rules/match-exported with configuration", rule, {
 			options: [{ transforms: ["pascal", "snake"] }],
 			errors: [
 				{
-					message:
-						"Filename 'variableName' must match any of the exported and transformed names 'VariableName', 'variable_name'.",
+					messageId: "multipleTransforms",
+					data: {
+						exportingFileName: "variableName",
+						candidateFileNames: "VariableName', 'variable_name",
+					},
 					column: 1,
 					line: 1,
 				},
@@ -484,7 +509,11 @@ ruleTester.run("lib/rules/match-exported with configuration", rule, {
 			options: [{ remove: "\\.react$" }],
 			errors: [
 				{
-					message: "Filename 'Foo.bar' must match the exported name 'Foo'.",
+					messageId: "noTransform",
+					data: {
+						exportingFileName: "Foo.bar",
+						candidateFileNames: "Foo",
+					},
 					column: 1,
 					line: 1,
 				},
@@ -501,8 +530,11 @@ ruleTester.run("lib/rules/match-exported with configuration", rule, {
 			options: [{ remove: "\\.react$" }],
 			errors: [
 				{
-					message:
-						"The directory 'Foo.react' must be named 'Foo', after the exported value of its index file.",
+					messageId: "indexFile",
+					data: {
+						exportingFileName: "Foo.react",
+						candidateFileNames: "Foo",
+					},
 					column: 1,
 					line: 1,
 				},
@@ -514,11 +546,15 @@ ruleTester.run("lib/rules/match-exported with configuration", rule, {
 			options: [{ matchExportedFunctionCall: true }],
 			errors: [
 				{
-					message: "Filename 'bar' must match the exported name 'foo'.",
+					messageId: "noTransform",
+					data: {
+						exportingFileName: "bar",
+						candidateFileNames: "foo",
+					},
 					column: 1,
 					line: 1,
 				},
 			],
 		},
-	],
+	]),
 });

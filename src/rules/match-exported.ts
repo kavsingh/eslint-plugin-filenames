@@ -53,13 +53,13 @@ const matchExported: Rule.RuleModule = {
 		],
 		messages: {
 			indexFile:
-				"The directory '{{expectedName}}' must be named '{{candidateNames}}', after the exported value of its index file.",
+				"The directory '{{exportingFileName}}' must be named '{{candidateFileNames}}', after the exported value of its index file.",
 			noTransform:
-				"Filename '{{expectedName}}' must match the exported name '{{candidateNames}}'.",
+				"Filename '{{exportingFileName}}' must match the exported name '{{candidateFileNames}}'.",
 			singleTransform:
-				"Filename '{{expectedName}}' must match the exported and transformed name '{{candidateNames}}'.",
+				"Filename '{{exportingFileName}}' must match the exported and transformed name '{{candidateFileNames}}'.",
 			multipleTransforms:
-				"Filename '{{expectedName}}' must match any of the exported and transformed names '{{candidateNames}}'.",
+				"Filename '{{exportingFileName}}' must match any of the exported and transformed names '{{candidateFileNames}}'.",
 		},
 	},
 	create(context) {
@@ -73,7 +73,7 @@ const matchExported: Rule.RuleModule = {
 			"matchExportedFunctionCall",
 		);
 
-		const expectedName = getExpectedName(
+		const exportingFileName = getExportingFileName(
 			parsed,
 			remove && typeof remove === "string" ? new RegExp(remove) : undefined,
 		);
@@ -88,25 +88,25 @@ const matchExported: Rule.RuleModule = {
 					return;
 				}
 
-				const exportedName = getDefaultExportName(
+				const defaultExportName = getDefaultExportName(
 					node,
 					matchExportedFunctionCall,
 				);
 
-				if (!exportedName) {
+				if (!defaultExportName) {
 					return;
 				}
 
-				if (parsed.isIndex && exportedName === "index") {
+				if (parsed.isIndex && defaultExportName === "index") {
 					return;
 				}
 
-				const candidateNames = getCanditateNames(
-					exportedName,
+				const candidateFileNames = getCanditateFileNames(
+					defaultExportName,
 					transformerNames,
 				);
 
-				if (candidateNames.some((name) => name === expectedName)) {
+				if (candidateFileNames.some((name) => name === exportingFileName)) {
 					return;
 				}
 
@@ -123,8 +123,8 @@ const matchExported: Rule.RuleModule = {
 					node,
 					messageId,
 					data: {
-						expectedName,
-						candidateNames: candidateNames.join("', '"),
+						exportingFileName,
+						candidateFileNames: candidateFileNames.join("', '"),
 					},
 				});
 			},
@@ -134,25 +134,7 @@ const matchExported: Rule.RuleModule = {
 
 export default matchExported;
 
-function getCanditateNames(
-	name: string | undefined,
-	transformerNames: string[],
-) {
-	if (!name) return [];
-	if (!transformerNames.length) return [name];
-
-	const result = [];
-
-	for (const transformerName of transformerNames) {
-		const transformer = TRANSFORMERS[transformerName];
-
-		if (transformer) result.push(transformer(name));
-	}
-
-	return result;
-}
-
-function getExpectedName(
+function getExportingFileName(
 	parsed: ParsedFilename,
 	replacePattern?: RegExp | undefined,
 ): string {
@@ -170,4 +152,22 @@ function getExpectedName(
 	replacePattern.lastIndex = 0;
 
 	return parsed.name.replace(replacePattern, "");
+}
+
+function getCanditateFileNames(
+	name: string | undefined,
+	transformerNames: string[],
+) {
+	if (!name) return [];
+	if (!transformerNames.length) return [name];
+
+	const result = [];
+
+	for (const transformerName of transformerNames) {
+		const transformer = TRANSFORMERS[transformerName];
+
+		if (transformer) result.push(transformer(name));
+	}
+
+	return result;
 }

@@ -3,6 +3,7 @@ import { RuleTester } from "eslint";
 import matchRegex from "./match-regex.js";
 
 import type { Rule } from "eslint";
+import { withExtensions } from "./test-helpers.js";
 
 const exportingCode = "module.exports = foo";
 const exportedFunctionCall = "module.exports = foo()";
@@ -11,7 +12,7 @@ const ruleTester = new RuleTester();
 const rule = matchRegex as unknown as Rule.RuleModule;
 
 ruleTester.run("lib/rules/match-regex", rule, {
-	valid: [
+	valid: withExtensions([
 		{
 			code: testCode,
 			filename: "<text>",
@@ -61,16 +62,16 @@ ruleTester.run("lib/rules/match-regex", rule, {
 			filename: "foo_bar.js",
 			options: ["^[a-z_]+$", { ignoreDefaultExport: true }],
 		},
-	],
+	]),
 
-	invalid: [
+	invalid: withExtensions([
 		{
 			code: testCode,
 			filename: "/some/dir/foo_bar.js",
 			errors: [
 				{
-					message:
-						"Filename 'foo_bar.js' does not match the naming convention.",
+					messageId: "doesNotMatch",
+					data: { name: "foo_bar" },
 					column: 1,
 					line: 1,
 				},
@@ -81,7 +82,8 @@ ruleTester.run("lib/rules/match-regex", rule, {
 			filename: "/some/dir/fooBAR.js",
 			errors: [
 				{
-					message: "Filename 'fooBAR.js' does not match the naming convention.",
+					messageId: "doesNotMatch",
+					data: { name: "fooBAR" },
 					column: 1,
 					line: 1,
 				},
@@ -92,8 +94,8 @@ ruleTester.run("lib/rules/match-regex", rule, {
 			filename: "fooBar$.js",
 			errors: [
 				{
-					message:
-						"Filename 'fooBar$.js' does not match the naming convention.",
+					messageId: "doesNotMatch",
+					data: { name: "fooBar$" },
 					column: 1,
 					line: 1,
 				},
@@ -105,11 +107,12 @@ ruleTester.run("lib/rules/match-regex", rule, {
 			options: ["^[a-z_]$"],
 			errors: [
 				{
-					message: "Filename 'fooBar.js' does not match the naming convention.",
+					messageId: "doesNotMatch",
+					data: { name: "fooBar" },
 					column: 1,
 					line: 1,
 				},
 			],
 		},
-	],
+	]),
 });

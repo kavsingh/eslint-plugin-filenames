@@ -68,7 +68,7 @@ const matchRegex: Rule.RuleModule = {
 				context.report({
 					node,
 					messageId: "doesNotMatch",
-					data: { name: parsed.base },
+					data: { name: parsed.name },
 				});
 			},
 		};
