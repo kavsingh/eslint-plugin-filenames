@@ -12,14 +12,6 @@ ruleTester.run("lib/rules/no-index", rule, {
 	valid: [
 		{
 			code: testCode,
-			filename: "<text>",
-		},
-		{
-			code: testCode,
-			filename: "<input>",
-		},
-		{
-			code: testCode,
 			filename: "foo.js",
 		},
 		{

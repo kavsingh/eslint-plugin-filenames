@@ -37,14 +37,6 @@ mock.method(process, "cwd", () => "/foo");
 ruleTester.run("match-exported", rule, {
 	valid: [
 		{
-			code: testCode,
-			filename: "<text>",
-		},
-		{
-			code: testCode,
-			filename: "<input>",
-		},
-		{
 			code: exportUnnamedFunctionCode,
 			filename: "testFile.js",
 		},

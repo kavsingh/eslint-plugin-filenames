@@ -9,7 +9,6 @@
 //------------------------------------------------------------------------------
 
 import parseFilename from "../lib/parse-filename.js";
-import isIgnoredFilename from "../lib/is-ignored-filename.js";
 
 import type { Rule } from "eslint";
 
@@ -27,11 +26,10 @@ const noIndex: Rule.RuleModule = {
 	},
 	create(context) {
 		const parsed = parseFilename(context.filename);
-		const isIndex = parsed.isIndex && !isIgnoredFilename(context.filename);
 
 		return {
 			Program(node) {
-				if (isIndex) {
+				if (parsed.isIndex) {
 					context.report({ node, messageId: "notAllowed" });
 				}
 			},

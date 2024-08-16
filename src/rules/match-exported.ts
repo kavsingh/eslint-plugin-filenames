@@ -16,7 +16,6 @@ import snakeCase from "lodash.snakecase";
 import upperFirst from "lodash.upperfirst";
 
 import getExportedName from "../lib/get-exported-name.js";
-import isIgnoredFilename from "../lib/is-ignored-filename.js";
 import parseFilename from "../lib/parse-filename.js";
 import readProp from "../lib/read-prop.js";
 
@@ -61,7 +60,6 @@ const matchExported: Rule.RuleModule = {
 	},
 	create(context) {
 		const parsed = parseFilename(context.filename);
-		const shouldIgnore = isIgnoredFilename(context.filename);
 
 		const options: unknown = context.options[0];
 		const remove = readProp(options, "remove");
@@ -79,10 +77,6 @@ const matchExported: Rule.RuleModule = {
 
 		return {
 			Program(node) {
-				if (shouldIgnore) {
-					return;
-				}
-
 				const exportedName = getExportedName(node, matchExportedCall);
 
 				if (!exportedName) {

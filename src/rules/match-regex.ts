@@ -10,7 +10,6 @@
 
 import parseFilename from "../lib/parse-filename.js";
 import getExportedName from "../lib/get-exported-name.js";
-import isIgnoredFilename from "../lib/is-ignored-filename.js";
 import readProp from "../lib/read-prop.js";
 
 import type { Rule } from "eslint";
@@ -40,7 +39,6 @@ const matchRegex: Rule.RuleModule = {
 	},
 	create(context) {
 		const parsed = parseFilename(context.filename);
-		const shouldIgnore = isIgnoredFilename(context.filename);
 
 		const regexp =
 			typeof context.options[0] === "string"
@@ -55,10 +53,6 @@ const matchRegex: Rule.RuleModule = {
 
 		return {
 			Program(node) {
-				if (shouldIgnore) {
-					return;
-				}
-
 				if (ignoreDefaultExport && getExportedName(node)) {
 					return;
 				}

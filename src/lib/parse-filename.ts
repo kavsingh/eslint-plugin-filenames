@@ -11,7 +11,7 @@ export default function parseFilename(filename: string) {
 		dir: path.dirname(absolutePath),
 		base: path.basename(absolutePath),
 		isIndex: name === "index",
-	};
+	} as const;
 }
 
 export type ParsedFilename = ReturnType<typeof parseFilename>;
