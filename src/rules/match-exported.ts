@@ -64,9 +64,12 @@ const matchExported: Rule.RuleModule = {
 		const options: unknown = context.options[0];
 		const remove = readProp(options, "remove");
 		const transforms = readProp(options, "transforms");
-		const matchExportedCall = !!readProp(options, "matchExportedFunctionCall");
+		const matchExportedFunctionCall = !!readProp(
+			options,
+			"matchExportedFunctionCall",
+		);
 
-		const expectedName = getStringToCheckAgainstExport(
+		const expectedName = getExpectedName(
 			parsed,
 			remove && typeof remove === "string" ? new RegExp(remove) : undefined,
 		);
@@ -77,7 +80,10 @@ const matchExported: Rule.RuleModule = {
 
 		return {
 			Program(node) {
-				const exportedName = getDefaultExportName(node, matchExportedCall);
+				const exportedName = getDefaultExportName(
+					node,
+					matchExportedFunctionCall,
+				);
 
 				if (!exportedName) {
 					return;
@@ -141,7 +147,7 @@ function getCanditateNames(
 	return result;
 }
 
-function getStringToCheckAgainstExport(
+function getExpectedName(
 	parsed: ParsedFilename,
 	replacePattern?: RegExp | undefined,
 ): string {

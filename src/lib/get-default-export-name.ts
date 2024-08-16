@@ -8,12 +8,12 @@ import type {
 
 export default function getDefaultExportName(
 	programNode: Program,
-	useCallExpression?: boolean | undefined,
+	matchExportedFunctionCall?: boolean | undefined,
 ) {
 	for (const node of programNode.body) {
 		// export default ...
 		if (node.type === "ExportDefaultDeclaration") {
-			return getNodeName(node.declaration, useCallExpression);
+			return getNodeName(node.declaration, matchExportedFunctionCall);
 		}
 
 		// module.exports = ...
@@ -26,7 +26,7 @@ export default function getDefaultExportName(
 			node.expression.left.property.type === "Identifier" &&
 			node.expression.left.property.name === "exports"
 		) {
-			return getNodeName(node.expression.right, useCallExpression);
+			return getNodeName(node.expression.right, matchExportedFunctionCall);
 		}
 	}
 
@@ -35,7 +35,7 @@ export default function getDefaultExportName(
 
 function getNodeName(
 	node: MaybeNamedFunctionDeclaration | MaybeNamedClassDeclaration | Expression,
-	useCallExpression?: boolean | undefined,
+	matchExportedFunctionCall?: boolean | undefined,
 ) {
 	if (node.type === "Identifier") {
 		return node.name;
@@ -46,7 +46,7 @@ function getNodeName(
 	}
 
 	if (
-		useCallExpression &&
+		matchExportedFunctionCall &&
 		node.type === "CallExpression" &&
 		node.callee.type === "Identifier"
 	) {
