@@ -39,9 +39,8 @@ const matchRegex: Rule.RuleModule = {
 		},
 	},
 	create(context) {
-		const filename = context.filename;
-		const shouldIgnore = isIgnoredFilename(filename);
-		const parsed = parseFilename(filename);
+		const parsed = parseFilename(context.filename);
+		const shouldIgnore = isIgnoredFilename(context.filename);
 
 		const regexp =
 			typeof context.options[0] === "string"

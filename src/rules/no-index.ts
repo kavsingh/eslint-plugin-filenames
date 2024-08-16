@@ -8,8 +8,6 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 
-import path from "node:path";
-
 import parseFilename from "../lib/parse-filename.js";
 import isIgnoredFilename from "../lib/is-ignored-filename.js";
 
@@ -28,9 +26,8 @@ const noIndex: Rule.RuleModule = {
 		},
 	},
 	create(context) {
-		const filename = context.filename;
-		const parsed = parseFilename(path.resolve(filename));
-		const isIndex = parsed.isIndex && !isIgnoredFilename(filename);
+		const parsed = parseFilename(context.filename);
+		const isIndex = parsed.isIndex && !isIgnoredFilename(context.filename);
 
 		return {
 			Program(node) {

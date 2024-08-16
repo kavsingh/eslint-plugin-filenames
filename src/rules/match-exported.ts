@@ -60,10 +60,8 @@ const matchExported: Rule.RuleModule = {
 		},
 	},
 	create(context) {
-		const filename = context.filename;
-		const absoluteFilename = path.resolve(filename);
-		const parsed = parseFilename(absoluteFilename);
-		const shouldIgnore = isIgnoredFilename(filename);
+		const parsed = parseFilename(context.filename);
+		const shouldIgnore = isIgnoredFilename(context.filename);
 
 		const options: unknown = context.options[0];
 		const remove = readProp(options, "remove");

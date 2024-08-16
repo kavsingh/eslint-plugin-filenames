@@ -1,14 +1,15 @@
 import path from "node:path";
 
 export default function parseFilename(filename: string) {
-	const ext = path.extname(filename);
-	const name = path.basename(filename, ext);
+	const absolutePath = path.resolve(filename);
+	const ext = path.extname(absolutePath);
+	const name = path.basename(absolutePath, ext);
 
 	return {
 		ext,
 		name,
-		dir: path.dirname(filename),
-		base: path.basename(filename),
+		dir: path.dirname(absolutePath),
+		base: path.basename(absolutePath),
 		isIndex: name === "index",
 	};
 }
