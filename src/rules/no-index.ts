@@ -29,9 +29,11 @@ const noIndex: Rule.RuleModule = {
 
 		return {
 			Program(node) {
-				if (parsed.isIndex) {
-					context.report({ node, messageId: "notAllowed" });
+				if (parsed.shouldIgnore || !parsed.isIndex) {
+					return;
 				}
+
+				context.report({ node, messageId: "notAllowed" });
 			},
 		};
 	},

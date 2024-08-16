@@ -37,6 +37,14 @@ mock.method(process, "cwd", () => "/foo");
 ruleTester.run("match-exported", rule, {
 	valid: [
 		{
+			code: testCode,
+			filename: "<text>",
+		},
+		{
+			code: testCode,
+			filename: "<input>",
+		},
+		{
 			code: exportUnnamedFunctionCode,
 			filename: "testFile.js",
 		},
@@ -305,6 +313,14 @@ ruleTester.run("match-exported", rule, {
 
 ruleTester.run("lib/rules/match-exported with configuration", rule, {
 	valid: [
+		{
+			code: testCode,
+			filename: "<text>",
+		},
+		{
+			code: testCode,
+			filename: "<input>",
+		},
 		{
 			code: camelCaseCommonJS,
 			filename: "variable_name.js",

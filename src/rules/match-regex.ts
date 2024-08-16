@@ -53,6 +53,10 @@ const matchRegex: Rule.RuleModule = {
 
 		return {
 			Program(node) {
+				if (parsed.shouldIgnore) {
+					return;
+				}
+
 				if (ignoreDefaultExport && getDefaultExportName(node)) {
 					return;
 				}

@@ -80,6 +80,10 @@ const matchExported: Rule.RuleModule = {
 
 		return {
 			Program(node) {
+				if (parsed.shouldIgnore) {
+					return;
+				}
+
 				const exportedName = getDefaultExportName(
 					node,
 					matchExportedFunctionCall,

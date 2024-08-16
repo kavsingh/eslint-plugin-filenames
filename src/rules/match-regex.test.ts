@@ -14,6 +14,14 @@ ruleTester.run("lib/rules/match-regex", rule, {
 	valid: [
 		{
 			code: testCode,
+			filename: "<text>",
+		},
+		{
+			code: testCode,
+			filename: "<input>",
+		},
+		{
+			code: testCode,
 			filename: "foobar.js",
 		},
 		{
