@@ -9,7 +9,7 @@ Forked from [eslint-plugin-filenames](https://github.com/selaux/eslint-plugin-fi
 
 Adds [eslint](http://eslint.org/) rules to ensure consistent filenames for your javascript files.
 
-__Please note__: This plugin will only lint the filenames of the `.js`, `.jsx` files you are linting with eslint. It will ignore other files that are not linted with eslint.
+__Please note__: This plugin will only lint the names of files you are linting with eslint. It will ignore other files that are not linted with eslint.
 
 ## Enabling the plugin
 
@@ -20,10 +20,10 @@ For `eslint<9.0.0` please use the original [eslint-plugin-filenames](https://git
 Modify your `eslint.config.js` file to load the plugin and enable the rules you want to use.
 
 ```js
-import filenamesPlugin from "@kavsingh/eslint-plugin-filenames";
+import filenames from "@kavsingh/eslint-plugin-filenames";
 
 {
-  plugins: { filenames: filenamesPlugin },
+  plugins: { filenames },
   rules: {
     "filenames/match-regex": "error",
     "filenames/match-exported": "error",
@@ -125,10 +125,93 @@ export default functionName();
 
 Having a bunch of `index.js` files can have negative influence on developer experience, e.g. when opening files by name. When enabling this rule. `index.js` files will always be considered a problem.
 
+## Configs
+
+The plugin exports the follwowing configurations for quick setup of file naming conventions.
+
+### camel
+
+Requires `camelCase` / `PascalCase` filenames with matching default exports.
+
+```js
+import filenames from "@kavsingh/eslint-plugin-filenames";
+
+{
+  extends: [filenames.configs.camel],
+}
+```
+
+Sets the following rules:
+
+```js
+{
+  "filenames/match-regex": [
+    "error",
+    "^[a-z0-9.]+$",
+    { ignoreExported: true },
+  ],
+  "filenames/match-exported": [
+    "error",
+    { transforms: ["camel", "pascal"] },
+  ],
+}
+```
+
+### kebab
+
+Requires `kebab-case` filenames with matching default exports.
+
+```js
+import filenames from "@kavsingh/eslint-plugin-filenames";
+
+{
+  extends: [filenames.configs.kebab],
+}
+```
+
+Sets the following rules:
+
+```js
+{
+  "filenames/match-regex": [
+    "error",
+    "^[a-z0-9-.]+$",
+    { ignoreExported: true },
+  ],
+  "filenames/match-exported": ["error", { transforms: ["kebab"] }],
+}
+```
+
+### snake
+
+Requires `snake_case` filenames with matching default exports.
+
+```js
+import filenames from "@kavsingh/eslint-plugin-filenames";
+
+{
+  extends: [filenames.configs.snake],
+}
+```
+
+Sets the following rules:
+
+```js
+{
+  "filenames/match-regex": [
+    "error",
+    "^[a-z0-9_.]+$",
+    { ignoreExported: true },
+  ],
+  "filenames/match-exported": ["error", { transforms: ["snake"] }],
+}
+```
+
 ## Changelog
 
-#### 2.0.0-alpha.0
+#### 2.0.0-rc.0
 
+- Provide configs for camel, kebab, and snake case
 - Support eslint 9 FlatConfig only, drop support for node < 18
 
 #### 1.3.2

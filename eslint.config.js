@@ -20,22 +20,13 @@ export default tsEslint.config(
 	js.configs.recommended,
 	...tsEslint.configs.strictTypeChecked,
 	...tsEslint.configs.stylisticTypeChecked,
+	self.configs.kebab,
 	nodePlugin.configs["flat/recommended-module"],
 	{
 		settings: { node: { version: ">=20.0.0" } },
-		plugins: { filenames: self },
 		rules: {
 			"@typescript-eslint/consistent-type-definitions": ["error", "type"],
 			"@typescript-eslint/consistent-type-imports": "error",
-			"filenames/match-regex": [
-				"error",
-				"^[a-z0-9-.]+$",
-				{ ignoreExported: true },
-			],
-			"filenames/match-exported": [
-				"error",
-				{ transforms: ["kebab"], removeRegex: "\\.test$" },
-			],
 		},
 	},
 	{
