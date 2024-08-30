@@ -21,32 +21,43 @@ jobs:
     needs: test-and-lint
     runs-on: ubuntu-latest
     steps:
-      - if: ${{ github.event == 'workflow_dispatch' }}
-        run: echo "!! Running from workflow_dispatch is for debug only"
+      - name: log inputs
+        run: |
+          echo "DEBUG = ${{ github.event.action == 'workflow_dispatch' }}"
+          echo "github.event_name = ${{ github.event_name }}"
+          echo "github.event.action = ${{ github.event.action }}"
+          echo "inputs.release_tag = ${{ inputs.release_tag }}"
 
-      - uses: actions/checkout@v4
+      - name: checkout
+        uses: actions/checkout@v4
 
-      - run: corepack enable pnpm
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          registry-url: https://registry.npmjs.org
-
-      - id: get_release_version
+      - name: get release version
+        id: get_release_version
         run: |
           TAG_VERSION=$(echo "${{ github.event.release.tag_name || inputs.release_tag }}" | awk 'sub(/^v/,"")1')
           echo "version=${TAG_VERSION}" >> $GITHUB_OUTPUT
 
-      - id: get_package_version
+      - name: get package version
+        id: get_package_version
         run: |
           PACKAGE_VERSION=$(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json)
           echo "version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
 
-      - if: ${{ steps.get_release_version.outputs.version != steps.get_package_version.outputs.version }}
+      - name: assert version
+        if: ${{ steps.get_release_version.outputs.version != steps.get_package_version.outputs.version }}
         run: |
           echo "Invalid package version, expected ${{ steps.get_release_version.outputs.version }}, got ${{ steps.get_package_version.outputs.version }}"
           exit 1
+
+      - if: ${{ success() }}
+        name: enable pnpm
+        run: corepack enable pnpm
+
+      - if: ${{ success() }}
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
 
       - if: ${{ success() }}
         run: pnpm install --frozen-lockfile
@@ -58,6 +69,6 @@ jobs:
         run: npm publish --dry-run
 
       - if: ${{ success() && github.event_name == 'published' }}
-        run: npm publish --access public
+        run: npm publish --access public --dry-run
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
