@@ -65,7 +65,7 @@
 		"@types/lodash.kebabcase": "4.1.9",
 		"@types/lodash.snakecase": "4.1.9",
 		"@types/lodash.upperfirst": "4.3.9",
-		"@types/node": "22.5.0",
+		"@types/node": "22.5.1",
 		"eslint": "9.9.1",
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-eslint-plugin": "6.2.0",
