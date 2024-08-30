@@ -2,6 +2,7 @@ name: Test and lint
 
 on:
   - push
+  - workflow_call
 
 jobs:
   test-and-lint:
