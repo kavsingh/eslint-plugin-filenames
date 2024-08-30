@@ -9,8 +9,8 @@ on:
     inputs:
       release_tag:
         description: Expected release tag
-        type: boolean
-        default: true
+        type: string
+        required: true
 
 jobs:
   test-and-lint:
