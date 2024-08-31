@@ -56,13 +56,13 @@ jobs:
           pre=$(echo "${version}" | awk -F'[-.]' '{print $4; exit; }')
           is_dispatch=${{ github.event_name == 'workflow_dispatch' }}
 
-          if [[ ${pre} ]] ; then
+          if [ -n "${pre}" ] ; then
             tag=$pre
           else
             tag=latest
           fi
 
-          if [[ ${is_dispatch} ]] ; then
+          if ${is_dispatch} ; then
             mode=dry
           else
             mode=live
