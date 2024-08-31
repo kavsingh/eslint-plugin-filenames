@@ -20,8 +20,9 @@ jobs:
     outputs:
       version: ${{ steps.validate_version.outputs.version }}
     steps:
-      - name: validate version
-        id: validate_version
+      - uses: actions/checkout@v4
+
+      - id: validate_version
         run: |
           tag_version=$(echo "${{ github.event.release.tag_name || inputs.release_tag }}" | awk 'sub(/^v/,"")1')
           package_version=$(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json)
