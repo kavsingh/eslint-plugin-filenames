@@ -63,9 +63,9 @@ jobs:
           fi
 
           if [[ ${is_dispatch} ]] ; then
-            mode=live
-          else
             mode=dry
+          else
+            mode=live
           fi
 
           {
