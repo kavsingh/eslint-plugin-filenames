@@ -5,6 +5,7 @@ on:
     types:
       - published
 
+  # workflow dispatch for debug purposes only
   workflow_dispatch:
     inputs:
       release_tag:
@@ -21,54 +22,67 @@ jobs:
     needs: test-and-lint
     runs-on: ubuntu-latest
     steps:
-      - name: log inputs
-        run: |
-          echo "DEBUG = ${{ github.event_name == 'workflow_dispatch' }}"
-          echo "github.event_name = ${{ github.event_name }}"
-          echo "github.event.action = ${{ github.event.action }}"
-          echo "inputs.release_tag = ${{ inputs.release_tag }}"
-
       - name: checkout
         uses: actions/checkout@v4
 
-      - name: get release version
-        id: get_release_version
+      - name: validate version
+        id: validate_version
         run: |
-          TAG_VERSION=$(echo "${{ github.event.release.tag_name || inputs.release_tag }}" | awk 'sub(/^v/,"")1')
-          echo "version=${TAG_VERSION}" >> $GITHUB_OUTPUT
+          tag_version=$(echo "${{ github.event.release.tag_name || inputs.release_tag }}" | awk 'sub(/^v/,"")1')
+          package_version=$(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json)
 
-      - name: get package version
-        id: get_package_version
-        run: |
-          PACKAGE_VERSION=$(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json)
-          echo "version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
+          if [[ ${tag_version} != ${package_version} ]] ; then
+            echo "Invalid package version, expected ${tag_version}, got ${package_version}"
+            exit 1
+          fi
 
-      - name: assert version
-        if: ${{ steps.get_release_version.outputs.version != steps.get_package_version.outputs.version }}
+          echo "version=${tag_version}" >> $GITHUB_OUTPUT
+
+      - if: ${{ success() }}
+        name: get publish info
+        id: get_publish_info
         run: |
-          echo "Invalid package version, expected ${{ steps.get_release_version.outputs.version }}, got ${{ steps.get_package_version.outputs.version }}"
-          exit 1
+          dry=${{ github.event_name == 'workflow_dispatch' }}
+          version=${{ steps.validate_version.outputs.version }}
+          pre=$(echo "${version}" | awk -F'[-.]' '{print $4; exit; }')
+
+          if [[ ${pre} ]] ; then
+            tag=$pre
+          else
+            tag=latest
+          fi
+
+          {
+            echo "### Publish"
+            echo "| version | tag | dry run |"
+            echo "| - | - | - |"
+            echo "| ${version} | ${tag} | ${dry} |"
+          } >> $GITHUB_STEP_SUMMARY
+
+          {
+            echo "tag=${tag}"
+            echo "dry=${dry}"
+          } >> $GITHUB_OUTPUT
 
       - if: ${{ success() }}
         name: enable pnpm
         run: corepack enable pnpm
 
       - if: ${{ success() }}
+        name: setup node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           registry-url: https://registry.npmjs.org
 
       - if: ${{ success() }}
-        run: pnpm install --frozen-lockfile
+        name: install and build
+        run: >
+          pnpm install --frozen-lockfile
+          pnpm build
 
       - if: ${{ success() }}
-        run: pnpm build
-
-      - if: ${{ success() && github.event_name == 'workflow_dispatch' }}
-        run: npm publish --dry-run
-
-      - if: ${{ success() && github.event_name != 'workflow_dispatch' }}
-        run: npm publish --access public --dry-run
+        name: publish
+        run: npm publish --access public --tag ${{ steps.get_publish_info.outputs.tag }}${{ steps.get_publish_info.outputs.dry && ' --dry-run' || '' }}
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
+          NODE_AUTH_TOKEN: ${{steps.get_publish_info.outputs.dry && 'INVALID TOKEN' || secrets.NPM_PUBLISH_TOKEN}}
