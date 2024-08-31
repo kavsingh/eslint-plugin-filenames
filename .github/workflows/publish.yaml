@@ -54,7 +54,7 @@ jobs:
         run: |
           version=${{ needs.validate.outputs.version }}
           pre=$(echo "${version}" | awk -F'[-.]' '{print $4; exit; }')
-          dry=${{ github.event_name == 'workflow_dispatch' }}
+          is_dispatch=${{ github.event_name == 'workflow_dispatch' }}
 
           if [[ ${pre} ]] ; then
             tag=$pre
@@ -62,16 +62,22 @@ jobs:
             tag=latest
           fi
 
+          if [[ ${is_dispatch} ]] ; then
+            mode=live
+          else
+            mode=dry
+          fi
+
           {
             echo "### Publish"
-            echo "| version | tag | dry run |"
+            echo "| version | tag | mode |"
             echo "| - | - | - |"
-            echo "| ${version} | ${tag} | ${dry} |"
+            echo "| ${version} | ${tag} | ${mode} |"
           } >> $GITHUB_STEP_SUMMARY
 
           {
             echo "tag=${tag}"
-            echo "dry=${dry}"
+            echo "mode=${mode}"
           } >> $GITHUB_OUTPUT
 
       - name: enable pnpm
@@ -87,6 +93,6 @@ jobs:
         run: pnpm install --frozen-lockfile && pnpm build
 
       - name: publish
-        run: npm publish --access public --tag ${{ steps.get_publish_info.outputs.tag }}${{ steps.get_publish_info.outputs.dry && ' --dry-run' || '' }}
+        run: npm publish --access public --tag ${{ steps.get_publish_info.outputs.tag }}${{ steps.get_publish_info.outputs.mode == 'dry' && ' --dry-run' || '' }}
         env:
-          NODE_AUTH_TOKEN: ${{steps.get_publish_info.outputs.dry && 'INVALID TOKEN' || secrets.NPM_PUBLISH_TOKEN}}
+          NODE_AUTH_TOKEN: ${{steps.get_publish_info.outputs.mode == 'dry' && 'INVALID TOKEN' || secrets.NPM_PUBLISH_TOKEN}}
