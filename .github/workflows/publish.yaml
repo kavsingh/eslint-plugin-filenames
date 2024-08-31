@@ -14,17 +14,12 @@ on:
         required: true
 
 jobs:
-  test-and-lint:
-    uses: ./.github/workflows/test-and-lint.yaml
-
-  publish:
-    name: Publish
-    needs: test-and-lint
+  validate:
+    name: validate
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.validate_version.outputs.version }}
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-
       - name: validate version
         id: validate_version
         run: |
@@ -38,13 +33,27 @@ jobs:
 
           echo "version=${tag_version}" >> $GITHUB_OUTPUT
 
-      - if: ${{ success() }}
-        name: get publish info
+  test-and-lint:
+    name: test and lint
+    needs: validate
+    uses: ./.github/workflows/test-and-lint.yaml
+
+  publish:
+    name: publish
+    needs:
+      - validate
+      - test-and-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: get publish info
         id: get_publish_info
         run: |
-          dry=${{ github.event_name == 'workflow_dispatch' }}
-          version=${{ steps.validate_version.outputs.version }}
+          version=${{ needs.validate.outputs.version }}
           pre=$(echo "${version}" | awk -F'[-.]' '{print $4; exit; }')
+          dry=${{ github.event_name == 'workflow_dispatch' }}
 
           if [[ ${pre} ]] ; then
             tag=$pre
@@ -64,25 +73,19 @@ jobs:
             echo "dry=${dry}"
           } >> $GITHUB_OUTPUT
 
-      - if: ${{ success() }}
-        name: enable pnpm
+      - name: enable pnpm
         run: corepack enable pnpm
 
-      - if: ${{ success() }}
-        name: setup node
+      - name: setup node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           registry-url: https://registry.npmjs.org
 
-      - if: ${{ success() }}
-        name: install and build
-        run: >
-          pnpm install --frozen-lockfile
-          pnpm build
+      - name: install and build
+        run: pnpm install --frozen-lockfile && pnpm build
 
-      - if: ${{ success() }}
-        name: publish
+      - name: publish
         run: npm publish --access public --tag ${{ steps.get_publish_info.outputs.tag }}${{ steps.get_publish_info.outputs.dry && ' --dry-run' || '' }}
         env:
           NODE_AUTH_TOKEN: ${{steps.get_publish_info.outputs.dry && 'INVALID TOKEN' || secrets.NPM_PUBLISH_TOKEN}}
