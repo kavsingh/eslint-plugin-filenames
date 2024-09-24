@@ -8,7 +8,7 @@ import type {
 
 export default function getDefaultExportName(
 	programNode: Program,
-	matchExportedFunctionCall?: boolean | undefined,
+	matchExportedFunctionCall?: boolean,
 ) {
 	for (const node of programNode.body) {
 		// export default ...
@@ -35,7 +35,7 @@ export default function getDefaultExportName(
 
 function getNodeName(
 	node: MaybeNamedFunctionDeclaration | MaybeNamedClassDeclaration | Expression,
-	matchExportedFunctionCall?: boolean | undefined,
+	matchExportedFunctionCall?: boolean,
 ) {
 	if (node.type === "Identifier") {
 		return node.name;

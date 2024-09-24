@@ -136,7 +136,7 @@ export default matchExported;
 
 function getExportingFileName(
 	parsed: ParsedFilename,
-	replacePattern?: RegExp | undefined,
+	replacePattern?: RegExp,
 ): string {
 	const dirArray = parsed.dir.split(path.sep);
 	const lastDirectory = dirArray[dirArray.length - 1];
