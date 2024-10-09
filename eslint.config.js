@@ -2,7 +2,7 @@ import js from "@eslint/js";
 // @ts-expect-error no-types-available
 import eslintPlugin from "eslint-plugin-eslint-plugin";
 import nodePlugin from "eslint-plugin-n";
-import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import prettierRecommended from "eslint-plugin-prettier/recommended";
 import globals from "globals";
 import tsEslint from "typescript-eslint";
 
@@ -10,6 +10,7 @@ import self from "./dist/index.js";
 
 export default tsEslint.config(
 	{ ignores: [".vscode/*", "dist/*", "build/*"] },
+
 	{
 		linterOptions: { reportUnusedDisableDirectives: true },
 		languageOptions: {
@@ -17,29 +18,41 @@ export default tsEslint.config(
 			parserOptions: { projectService: true },
 		},
 	},
+
 	js.configs.recommended,
 	...tsEslint.configs.strictTypeChecked,
 	...tsEslint.configs.stylisticTypeChecked,
 	self.configs.kebab,
 	nodePlugin.configs["flat/recommended-module"],
+
 	{
-		settings: { node: { version: ">=20.0.0" } },
 		rules: {
 			"@typescript-eslint/consistent-type-definitions": ["error", "type"],
 			"@typescript-eslint/consistent-type-imports": "error",
 		},
 	},
+
 	{
-		files: ["*.cjs", "*.cts"],
-		languageOptions: { parserOptions: { sourceType: "script" } },
+		files: ["src/**/*.test.ts"],
+		rules: {
+			"n/no-unsupported-features/node-builtins": [
+				"error",
+				{
+					version: ">=18.7",
+					allowExperimental: true,
+				},
+			],
+		},
 	},
+
 	{
-		files: ["./src/rules"],
+		files: ["src/rules/**/*.ts"],
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		extends: [
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			eslintPlugin.configs["flat/recommended"],
 		],
 	},
-	eslintPluginPrettierRecommended,
+
+	prettierRecommended,
 );
