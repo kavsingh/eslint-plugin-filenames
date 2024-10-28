@@ -27,7 +27,7 @@
 	"engines": {
 		"node": ">=18"
 	},
-	"packageManager": "pnpm@9.12.1+sha512.e5a7e52a4183a02d5931057f7a0dbff9d5e9ce3161e33fa68ae392125b79282a8a8a470a51dfc8a0ed86221442eb2fb57019b0990ed24fab519bf0e1bc5ccfc4",
+	"packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
 	"main": "dist/index.js",
 	"files": [
 		"dist/**/*"
@@ -58,7 +58,7 @@
 		"lodash.upperfirst": "^4.0.0"
 	},
 	"devDependencies": {
-		"@eslint/js": "9.12.0",
+		"@eslint/js": "9.13.0",
 		"@stryker-mutator/core": "8.6.0",
 		"@tsconfig/strictest": "2.0.5",
 		"@types/eslint": "9.6.1",
@@ -68,19 +68,19 @@
 		"@types/lodash.kebabcase": "4.1.9",
 		"@types/lodash.snakecase": "4.1.9",
 		"@types/lodash.upperfirst": "4.3.9",
-		"@types/node": "22.7.5",
-		"eslint": "9.12.0",
+		"@types/node": "22.8.2",
+		"eslint": "9.13.0",
 		"eslint-config-prettier": "9.1.0",
-		"eslint-plugin-eslint-plugin": "6.2.0",
-		"eslint-plugin-n": "17.10.3",
+		"eslint-plugin-eslint-plugin": "6.3.1",
+		"eslint-plugin-n": "17.11.1",
 		"eslint-plugin-prettier": "5.2.1",
 		"glob": "11.0.0",
-		"globals": "15.10.0",
+		"globals": "15.11.0",
 		"prettier": "3.3.3",
-		"tsup": "8.3.0",
-		"tsx": "4.19.1",
+		"tsup": "8.3.5",
+		"tsx": "4.19.2",
 		"typescript": "5.6.3",
-		"typescript-eslint": "8.8.1"
+		"typescript-eslint": "8.12.0"
 	},
 	"peerDependencies": {
 		"eslint": "^9.0.0"
