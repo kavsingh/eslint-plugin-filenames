@@ -1,7 +1,7 @@
 import js from "@eslint/js";
 // @ts-expect-error no-types-available
 import eslintPlugin from "eslint-plugin-eslint-plugin";
-import nodePlugin from "eslint-plugin-n";
+import n from "eslint-plugin-n";
 import prettierRecommended from "eslint-plugin-prettier/recommended";
 import globals from "globals";
 import tsEslint from "typescript-eslint";
@@ -23,7 +23,7 @@ export default tsEslint.config(
 	...tsEslint.configs.strictTypeChecked,
 	...tsEslint.configs.stylisticTypeChecked,
 	self.configs.kebab,
-	nodePlugin.configs["flat/recommended-module"],
+	n.configs["flat/recommended-module"],
 
 	{
 		rules: {
@@ -37,10 +37,7 @@ export default tsEslint.config(
 		rules: {
 			"n/no-unsupported-features/node-builtins": [
 				"error",
-				{
-					version: ">=18.7",
-					allowExperimental: true,
-				},
+				{ version: ">=22", allowExperimental: true },
 			],
 		},
 	},
