@@ -8,7 +8,8 @@ import tsEslint from "typescript-eslint";
 
 import self from "./dist/index.js";
 
-export default tsEslint.config(
+/** @type {tsEslint.ConfigArray} */
+const config = tsEslint.config(
 	{ ignores: [".vscode/*", "dist/*", "build/*"] },
 
 	{
@@ -33,6 +34,13 @@ export default tsEslint.config(
 	},
 
 	{
+		files: ["*.js"],
+		rules: {
+			"filenames/match-exported": "off",
+		},
+	},
+
+	{
 		files: ["src/**/*.test.ts"],
 		rules: {
 			"n/no-unsupported-features/node-builtins": [
@@ -53,3 +61,5 @@ export default tsEslint.config(
 
 	prettierRecommended,
 );
+
+export default config;
