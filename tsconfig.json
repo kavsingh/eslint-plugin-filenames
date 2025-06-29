@@ -13,8 +13,7 @@
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
 		"lib": ["ESNext"],
-		"resolveJsonModule": true,
-		"types": ["node"]
+		"resolveJsonModule": true
 	},
 	"include": ["./*.ts", "./*.js", "src", "test"]
 }

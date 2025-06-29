@@ -1,6 +1,6 @@
 {
 	"name": "@kavsingh/eslint-plugin-filenames",
-	"version": "2.0.0-rc.1",
+	"version": "2.0.0-rc.2",
 	"description": "Eslint rule for consistent filenames.",
 	"repository": {
 		"type": "git",
@@ -27,7 +27,7 @@
 	"engines": {
 		"node": ">=18"
 	},
-	"packageManager": "pnpm@10.4.1+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af",
+	"packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184",
 	"main": "dist/index.js",
 	"files": [
 		"dist/**/*"
@@ -49,7 +49,7 @@
 		"test:coverage": "mkdir -p reports/coverage && glob -c 'node --import=tsx --test --experimental-test-coverage --test-reporter=tap --test-reporter=lcov --test-reporter-destination=stdout --test-reporter-destination=./reports/coverage/lcov.info' './src/**/*.test.ts'",
 		"test:mutation": "stryker run",
 		"lint": "tsc && eslint .",
-		"build": "tsup-node"
+		"build": "tsdown"
 	},
 	"dependencies": {
 		"lodash.camelcase": "^4.0.0",
@@ -58,30 +58,30 @@
 		"lodash.upperfirst": "^4.0.0"
 	},
 	"devDependencies": {
-		"@eslint/js": "9.21.0",
-		"@stryker-mutator/core": "8.7.1",
+		"@eslint/js": "9.30.0",
+		"@stryker-mutator/core": "9.0.1",
 		"@tsconfig/strictest": "2.0.5",
 		"@types/eslint": "9.6.1",
-		"@types/estree": "1.0.6",
+		"@types/estree": "1.0.8",
 		"@types/lodash.camelcase": "4.3.9",
 		"@types/lodash.kebabcase": "4.1.9",
 		"@types/lodash.snakecase": "4.1.9",
 		"@types/lodash.upperfirst": "4.3.9",
-		"@types/node": "22.13.5",
-		"eslint": "9.21.0",
-		"eslint-config-prettier": "10.0.1",
-		"eslint-plugin-eslint-plugin": "6.4.0",
-		"eslint-plugin-n": "17.15.1",
-		"eslint-plugin-prettier": "5.2.3",
-		"glob": "11.0.1",
-		"globals": "16.0.0",
-		"prettier": "3.5.2",
-		"tsup": "8.3.6",
-		"tsx": "4.19.3",
-		"typescript": "5.7.3",
-		"typescript-eslint": "8.25.0"
+		"@types/node": "24.0.7",
+		"eslint": "9.30.0",
+		"eslint-config-prettier": "10.1.5",
+		"eslint-plugin-eslint-plugin": "6.5.0",
+		"eslint-plugin-n": "17.20.0",
+		"eslint-plugin-prettier": "5.5.1",
+		"glob": "11.0.3",
+		"globals": "16.2.0",
+		"prettier": "3.6.2",
+		"tsdown": "0.12.9",
+		"tsx": "4.20.3",
+		"typescript": "5.8.3",
+		"typescript-eslint": "8.35.0"
 	},
 	"peerDependencies": {
-		"eslint": "^9.21.0"
+		"eslint": "9.x.x"
 	}
 }

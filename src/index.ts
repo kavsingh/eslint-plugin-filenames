@@ -61,7 +61,3 @@ const configs = {
 } satisfies ESLint.Plugin["configs"];
 
 export default { ...plugin, configs };
-
-// defined at build time: see tsup config
-declare const PLUGIN_NAME: string;
-declare const PLUGIN_VERSION: string;
