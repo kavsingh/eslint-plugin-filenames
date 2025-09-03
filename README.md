@@ -209,7 +209,7 @@ Sets the following rules:
 
 ## Changelog
 
-#### 2.0.0-rc.3
+#### 2.0.0-rc.2
 
 - Fix defaults and configs
 - Drop support for node < 20

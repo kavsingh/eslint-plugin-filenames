@@ -1,6 +1,6 @@
 {
 	"name": "@kavsingh/eslint-plugin-filenames",
-	"version": "2.0.0-rc.3",
+	"version": "2.0.0-rc.2",
 	"description": "Eslint rule for consistent filenames.",
 	"repository": {
 		"type": "git",
