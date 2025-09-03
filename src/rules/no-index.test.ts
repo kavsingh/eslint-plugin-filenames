@@ -2,10 +2,10 @@
 
 import { RuleTester } from "eslint";
 
-import noIndex from "./no-index.js";
+import noIndex from "./no-index.ts";
 
 import type { Rule } from "eslint";
-import { withExtensions } from "./test-helpers.js";
+import { withExtensions } from "./test-helpers.ts";
 
 const testCode = "var foo = 'bar';";
 const ruleTester = new RuleTester();

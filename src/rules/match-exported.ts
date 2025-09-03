@@ -15,12 +15,12 @@ import kebabCase from "lodash.kebabcase";
 import snakeCase from "lodash.snakecase";
 import upperFirst from "lodash.upperfirst";
 
-import getDefaultExportName from "../lib/get-default-export-name.js";
-import parseFilename from "../lib/parse-filename.js";
-import readProp from "../lib/read-prop.js";
+import getDefaultExportName from "../lib/get-default-export-name.ts";
+import parseFilename from "../lib/parse-filename.ts";
+import readProp from "../lib/read-prop.ts";
 
 import type { Rule } from "eslint";
-import type { ParsedFilename } from "../lib/parse-filename.js";
+import type { ParsedFilename } from "../lib/parse-filename.ts";
 
 const TRANSFORMERS: Record<string, Transformer> = {
 	kebab: kebabCase,
@@ -44,13 +44,28 @@ const matchExported: Rule.RuleModule = {
 				properties: {
 					transforms: {
 						type: "array",
-						items: [{ type: "string" }],
+						description:
+							"If your filename policy doesn't quite match with your variable naming policy, you can add one or multiple transforms",
+						items: [
+							{
+								type: "string",
+								description: "A filename transform, e.g. kebab for kebab case",
+							},
+						],
 					},
-					remove: { type: "string" },
-					matchExportedFunctionCall: { type: "boolean" },
+					remove: {
+						type: "string",
+						description:
+							"Remove parts of a filename matching a regex pattern before transforming and matching against the export",
+					},
+					matchExportedFunctionCall: {
+						type: "boolean",
+						description: "Match exported function calls",
+					},
 				},
 			},
 		],
+		defaultOptions: [{}],
 		messages: {
 			indexFile:
 				"The directory '{{exportingFileName}}' must be named '{{candidateFileNames}}', after the exported value of its index file.",

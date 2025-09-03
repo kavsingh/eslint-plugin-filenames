@@ -5,7 +5,7 @@ import packageJson from "./package.json" with { type: "json" };
 export default defineConfig({
 	entry: ["src/index.ts"],
 	format: ["cjs", "esm"],
-	target: "node18",
+	target: "node20",
 	dts: true,
 	clean: true,
 	define: {

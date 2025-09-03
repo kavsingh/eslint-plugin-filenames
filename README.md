@@ -147,8 +147,8 @@ Sets the following rules:
 {
   "filenames/match-regex": [
     "error",
-    "^[a-z0-9.]+$",
-    { ignoreExported: true },
+    "^([a-z0-9]+)([A-Z][a-z0-9]+)*$",
+    { ignoreDefaultExport: true },
   ],
   "filenames/match-exported": [
     "error",
@@ -176,7 +176,7 @@ Sets the following rules:
   "filenames/match-regex": [
     "error",
     "^[a-z0-9-.]+$",
-    { ignoreExported: true },
+    { ignoreDefaultExport: true },
   ],
   "filenames/match-exported": ["error", { transforms: ["kebab"] }],
 }
@@ -201,13 +201,18 @@ Sets the following rules:
   "filenames/match-regex": [
     "error",
     "^[a-z0-9_.]+$",
-    { ignoreExported: true },
+    { ignoreDefaultExport: true },
   ],
   "filenames/match-exported": ["error", { transforms: ["snake"] }],
 }
 ```
 
 ## Changelog
+
+#### 2.0.0-rc.3
+
+- Fix defaults and configs
+- Drop support for node < 20
 
 #### 2.0.0-rc.0
 

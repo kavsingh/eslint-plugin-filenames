@@ -8,7 +8,7 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 
-import parseFilename from "../lib/parse-filename.js";
+import parseFilename from "../lib/parse-filename.ts";
 
 import type { Rule } from "eslint";
 

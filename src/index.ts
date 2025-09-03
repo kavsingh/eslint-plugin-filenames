@@ -1,8 +1,13 @@
 /* node:coverage disable */
 
-import matchExported from "./rules/match-exported.js";
-import matchRegex from "./rules/match-regex.js";
-import noIndex from "./rules/no-index.js";
+import {
+	REGEXP_CAMEL_CASE,
+	REGEXP_KEBAB_CASE,
+	REGEXP_SNAKE_CASE,
+} from "./lib/constants.ts";
+import matchExported from "./rules/match-exported.ts";
+import matchRegex from "./rules/match-regex.ts";
+import noIndex from "./rules/no-index.ts";
 
 import type { ESLint } from "eslint";
 
@@ -25,8 +30,8 @@ const configs = {
 		rules: {
 			"filenames/match-regex": [
 				"error",
-				"^[a-z0-9-.]+$",
-				{ ignoreExported: true },
+				REGEXP_KEBAB_CASE,
+				{ ignoreDefaultExport: true },
 			],
 			"filenames/match-exported": ["error", { transforms: ["kebab"] }],
 		},
@@ -37,8 +42,8 @@ const configs = {
 		rules: {
 			"filenames/match-regex": [
 				"error",
-				"^[a-z0-9_.]+$",
-				{ ignoreExported: true },
+				REGEXP_SNAKE_CASE,
+				{ ignoreDefaultExport: true },
 			],
 			"filenames/match-exported": ["error", { transforms: ["snake"] }],
 		},
@@ -49,8 +54,8 @@ const configs = {
 		rules: {
 			"filenames/match-regex": [
 				"error",
-				"^[a-zA-Z0-9.]+$",
-				{ ignoreExported: true },
+				REGEXP_CAMEL_CASE,
+				{ ignoreDefaultExport: true },
 			],
 			"filenames/match-exported": [
 				"error",

@@ -8,11 +8,12 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 
-import parseFilename from "../lib/parse-filename.js";
-import getDefaultExportName from "../lib/get-default-export-name.js";
-import readProp from "../lib/read-prop.js";
+import parseFilename from "../lib/parse-filename.ts";
+import getDefaultExportName from "../lib/get-default-export-name.ts";
+import readProp from "../lib/read-prop.ts";
 
 import type { Rule } from "eslint";
+import { REGEXP_CAMEL_CASE } from "../lib/constants.ts";
 
 const matchRegex: Rule.RuleModule = {
 	meta: {
@@ -25,25 +26,30 @@ const matchRegex: Rule.RuleModule = {
 		schema: [
 			{
 				type: "string",
+				description: "Regex expression as string",
 			},
 			{
 				type: "object",
 				properties: {
-					ignoreDefaultExport: { type: "boolean" },
+					ignoreDefaultExport: {
+						type: "boolean",
+						description: "Ignore named default export",
+					},
 				},
 			},
 		],
+		defaultOptions: [REGEXP_CAMEL_CASE, { ignoreDefaultExport: false }],
 		messages: {
 			doesNotMatch: "Filename '{{name}}' does not match the naming convention.",
 		},
 	},
 	create(context) {
 		const parsed = parseFilename(context.filename);
-
-		const regexp =
+		const regexp = new RegExp(
 			typeof context.options[0] === "string"
-				? new RegExp(context.options[0])
-				: /^([a-z0-9]+)([A-Z][a-z0-9]+)*$/g;
+				? context.options[0]
+				: REGEXP_CAMEL_CASE,
+		);
 		const nameMatchesRegex = regexp.test(parsed.name);
 
 		const ignoreDefaultExport = !!readProp(

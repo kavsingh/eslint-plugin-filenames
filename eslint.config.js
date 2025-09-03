@@ -1,5 +1,5 @@
 import js from "@eslint/js";
-// @ts-expect-error no-types-available
+import { defineConfig } from "eslint/config";
 import eslintPlugin from "eslint-plugin-eslint-plugin";
 import n from "eslint-plugin-n";
 import prettierRecommended from "eslint-plugin-prettier/recommended";
@@ -8,8 +8,7 @@ import tsEslint from "typescript-eslint";
 
 import self from "./dist/index.js";
 
-/** @type {tsEslint.ConfigArray} */
-const config = tsEslint.config(
+export default defineConfig(
 	{ ignores: [".vscode/*", "dist/*", "build/*"] },
 
 	{
@@ -52,14 +51,8 @@ const config = tsEslint.config(
 
 	{
 		files: ["src/rules/**/*.ts"],
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		extends: [
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			eslintPlugin.configs["flat/recommended"],
-		],
+		extends: [eslintPlugin.configs.recommended],
 	},
 
 	prettierRecommended,
 );
-
-export default config;

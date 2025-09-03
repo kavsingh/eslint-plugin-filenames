@@ -2,13 +2,14 @@
 
 import { RuleTester } from "eslint";
 
-import matchRegex from "./match-regex.js";
+import matchRegex from "./match-regex.ts";
 
 import type { Rule } from "eslint";
-import { withExtensions } from "./test-helpers.js";
+import { withExtensions } from "./test-helpers.ts";
 
 const exportingCode = "module.exports = foo";
 const exportedFunctionCall = "module.exports = foo()";
+const exportedDefault = "const foo = () => undefined; module.exports = foo;";
 const testCode = "var foo = 'bar';";
 const ruleTester = new RuleTester();
 const rule = matchRegex as unknown as Rule.RuleModule;
@@ -64,6 +65,11 @@ ruleTester.run("lib/rules/match-regex", rule, {
 			filename: "foo_bar.js",
 			options: ["^[a-z_]+$", { ignoreDefaultExport: true }],
 		},
+		{
+			code: exportedDefault,
+			filename: "bar.js",
+			options: ["^[a-z_]$", { ignoreDefaultExport: true }],
+		},
 	]),
 
 	invalid: withExtensions([
@@ -111,6 +117,19 @@ ruleTester.run("lib/rules/match-regex", rule, {
 				{
 					messageId: "doesNotMatch",
 					data: { name: "fooBar" },
+					column: 1,
+					line: 1,
+				},
+			],
+		},
+		{
+			code: exportedDefault,
+			filename: "bar.js",
+			options: ["^[a-z_]$", { ignoreDefaultExport: false }],
+			errors: [
+				{
+					messageId: "doesNotMatch",
+					data: { name: "bar" },
 					column: 1,
 					line: 1,
 				},

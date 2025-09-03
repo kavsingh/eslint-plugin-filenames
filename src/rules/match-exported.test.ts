@@ -4,10 +4,10 @@ import { mock } from "node:test";
 
 import { RuleTester } from "eslint";
 
-import matchExported from "./match-exported.js";
+import matchExported from "./match-exported.ts";
 
 import type { Rule } from "eslint";
-import { withExtensions } from "./test-helpers.js";
+import { withExtensions } from "./test-helpers.ts";
 
 const testCode = "var foo = 'bar';";
 const testCallCode = "export default foo();";
