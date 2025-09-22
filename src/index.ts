@@ -11,11 +11,12 @@ import noIndex from "./rules/no-index.ts";
 
 import type { ESLint } from "eslint";
 
+// without these, meta fields in exported d.ts type as `any` and not `string`
+const name: string = PLUGIN_NAME;
+const version: string = PLUGIN_VERSION;
+
 const plugin = {
-	meta: {
-		name: PLUGIN_NAME,
-		version: PLUGIN_VERSION,
-	},
+	meta: { name, version },
 	rules: {
 		"match-exported": matchExported,
 		"match-regex": matchRegex,
