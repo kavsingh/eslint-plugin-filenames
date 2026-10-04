@@ -15,7 +15,7 @@ const defaultExtensions = [
 
 export function withExtensions<
 	TCase extends RuleTester.ValidTestCase | RuleTester.InvalidTestCase,
->(testCases: TCase[], extensions = defaultExtensions) {
+>(testCases: TCase[], extensions: string[] = defaultExtensions): TCase[] {
 	return testCases.flatMap((testCase) => {
 		const baseFilename = testCase.filename
 			? testCase.filename.replace(/\.(js|cjs|mjs|jsx|ts|cts|mts|tsx)$/, "")

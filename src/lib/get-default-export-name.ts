@@ -9,7 +9,7 @@ import type {
 export default function getDefaultExportName(
 	programNode: Program,
 	matchExportedFunctionCall?: boolean,
-) {
+): string | undefined {
 	for (const node of programNode.body) {
 		// export default ...
 		if (node.type === "ExportDefaultDeclaration") {

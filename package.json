@@ -1,6 +1,6 @@
 {
 	"name": "@kavsingh/eslint-plugin-filenames",
-	"version": "2.0.0-rc.3",
+	"version": "2.0.0-rc.4",
 	"description": "Eslint rule for consistent filenames.",
 	"repository": {
 		"type": "git",
@@ -25,9 +25,9 @@
 	],
 	"type": "module",
 	"engines": {
-		"node": ">=20"
+		"node": ">=22"
 	},
-	"packageManager": "pnpm@10.17.1+sha512.17c560fca4867ae9473a3899ad84a88334914f379be46d455cbf92e5cf4b39d34985d452d2583baf19967fa76cb5c17bc9e245529d0b98745721aa7200ecaf7a",
+	"packageManager": "pnpm@12.9.1+sha512.06b055fff5cd20dc12781de173ced3310ce0951bf2ec620211a16045d5444d5c93a663210764ef29a653a610459ba0368f0e74f84d80c54723cf95aae7bc0d6d",
 	"main": "dist/index.js",
 	"files": [
 		"dist/**/*"
@@ -35,8 +35,8 @@
 	"exports": {
 		".": {
 			"import": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
 			},
 			"require": {
 				"types": "./dist/index.d.cts",
@@ -45,8 +45,9 @@
 		}
 	},
 	"scripts": {
-		"test": "glob -c 'node --import=tsx --test' './src/**/*.test.ts'",
-		"test:coverage": "mkdir -p reports/coverage && glob -c 'node --import=tsx --test --experimental-test-coverage --test-reporter=tap --test-reporter=lcov --test-reporter-destination=stdout --test-reporter-destination=./reports/coverage/lcov.info' './src/**/*.test.ts'",
+		"prepare": "pnpm build && lefthook install",
+		"test": "glob -c 'node --experimental-strip-types --test' './src/**/*.test.ts'",
+		"test:coverage": "mkdir -p reports/coverage && glob -c 'node --experimental-strip-types --test --experimental-test-coverage --test-reporter=tap --test-reporter=lcov --test-reporter-destination=stdout --test-reporter-destination=./reports/coverage/lcov.info' './src/**/*.test.ts'",
 		"test:mutation": "stryker run",
 		"lint": "tsc && eslint .",
 		"build": "tsdown"
@@ -58,31 +59,32 @@
 		"lodash.upperfirst": "^4.0.0"
 	},
 	"devDependencies": {
-		"@eslint/js": "9.36.0",
-		"@stryker-mutator/core": "9.1.1",
-		"@tsconfig/node24": "24.0.1",
-		"@tsconfig/strictest": "2.0.5",
+		"@eslint/js": "10.0.1",
+		"@stryker-mutator/core": "10.0.0",
+		"@tsconfig/node24": "24.0.5",
+		"@tsconfig/strictest": "2.0.8",
 		"@types/eslint": "9.6.1",
-		"@types/estree": "1.0.8",
+		"@types/estree": "1.0.9",
 		"@types/lodash.camelcase": "4.3.9",
 		"@types/lodash.kebabcase": "4.1.9",
 		"@types/lodash.snakecase": "4.1.9",
 		"@types/lodash.upperfirst": "4.3.9",
-		"@types/node": "24.5.2",
-		"eslint": "9.36.0",
+		"@types/node": "24.19.0",
+		"@typescript/native-preview": "npm:typescript@7.0.2",
+		"eslint": "10.11.0",
 		"eslint-config-prettier": "10.1.8",
-		"eslint-plugin-eslint-plugin": "7.0.0",
-		"eslint-plugin-n": "17.23.1",
-		"eslint-plugin-prettier": "5.5.4",
-		"glob": "11.0.3",
-		"globals": "16.4.0",
-		"prettier": "3.6.2",
-		"tsdown": "0.15.4",
-		"tsx": "4.20.5",
-		"typescript": "5.9.2",
-		"typescript-eslint": "8.44.1"
+		"eslint-plugin-eslint-plugin": "7.6.2",
+		"eslint-plugin-n": "18.4.0",
+		"eslint-plugin-prettier": "5.5.6",
+		"glob-bin": "1.1.0",
+		"globals": "17.13.0",
+		"lefthook": "2.1.16",
+		"prettier": "3.9.9",
+		"tsdown": "0.23.0",
+		"typescript": "npm:@typescript/typescript6@6.0.2",
+		"typescript-eslint": "8.71.0"
 	},
 	"peerDependencies": {
-		"eslint": "9.x.x"
+		"eslint": "9.x.x || 10.x.x"
 	}
 }

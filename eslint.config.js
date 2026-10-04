@@ -6,7 +6,7 @@ import prettierRecommended from "eslint-plugin-prettier/recommended";
 import globals from "globals";
 import tsEslint from "typescript-eslint";
 
-import self from "./dist/index.js";
+import self from "./dist/index.mjs";
 
 export default defineConfig(
 	{ ignores: [".vscode/*", "dist/*", "build/*"] },

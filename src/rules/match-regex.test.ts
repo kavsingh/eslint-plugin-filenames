@@ -4,7 +4,6 @@ import { RuleTester } from "eslint";
 
 import matchRegex from "./match-regex.ts";
 
-import type { Rule } from "eslint";
 import { withExtensions } from "./test-helpers.ts";
 
 const exportingCode = "module.exports = foo";
@@ -12,7 +11,7 @@ const exportedFunctionCall = "module.exports = foo()";
 const exportedDefault = "const foo = () => undefined; module.exports = foo;";
 const testCode = "var foo = 'bar';";
 const ruleTester = new RuleTester();
-const rule = matchRegex as unknown as Rule.RuleModule;
+const rule = matchRegex;
 
 ruleTester.run("lib/rules/match-regex", rule, {
 	valid: withExtensions([

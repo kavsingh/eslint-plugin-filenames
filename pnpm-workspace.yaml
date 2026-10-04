@@ -1,2 +1,9 @@
-onlyBuiltDependencies:
-  - esbuild
+savePrefix: ""
+verifyDepsBeforeRun: prompt
+minimumReleaseAge: 4320 # 3 days in minutes
+strictDepBuilds: true
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 10080
+allowBuilds:
+  lefthook: true

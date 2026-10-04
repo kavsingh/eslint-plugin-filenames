@@ -6,7 +6,6 @@ import { RuleTester } from "eslint";
 
 import matchExported from "./match-exported.ts";
 
-import type { Rule } from "eslint";
 import { withExtensions } from "./test-helpers.ts";
 
 const testCode = "var foo = 'bar';";
@@ -33,7 +32,7 @@ const snakeCaseCommonJS = "module.exports = variable_name;";
 const camelCaseEs6 = "export default variableName;";
 const snakeCaseEs6 = "export default variable_name;";
 const ruleTester = new RuleTester();
-const rule = matchExported as unknown as Rule.RuleModule;
+const rule = matchExported;
 
 mock.method(process, "cwd", () => "/foo");
 

@@ -1,0 +1,18 @@
+{
+	"$schema": "./node_modules/lefthook/schema.json",
+	"pre-commit": {
+		"jobs": [
+			{
+				"glob": "*.{html,css,json,jsonc,yml,yaml,toml,md}",
+				"run": "pnpm prettier --write --no-error-on-unmatched-pattern {staged_files}",
+				"stage_fixed": true
+			},
+			{
+				"glob": "*.{ts,tsx,js,jsx}",
+				"run": "pnpm eslint --fix --no-error-on-unmatched-pattern {staged_files}",
+				"stage_fixed": true
+			}
+		]
+	},
+	"pre-push": { "jobs": [{ "run": "pnpm lint" }] }
+}
